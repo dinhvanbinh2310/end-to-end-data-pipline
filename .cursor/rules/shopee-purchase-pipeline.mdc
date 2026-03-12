@@ -1,0 +1,57 @@
+---
+description: Quy ước xây dựng End-to-End Data Pipeline phân tích hành vi mua hàng Shopee
+alwaysApply: true
+---
+
+## Phạm vi
+
+- Tập trung pipeline phân tích hành vi mua hàng trên Shopee từ dữ liệu đơn hàng, sản phẩm, người dùng, traffic.
+
+## Kiến trúc tầng dữ liệu
+
+- Raw: lưu toàn bộ dữ liệu gốc từ API/file (orders, order_items, users, products, shops, events) theo partition thời gian.
+- Staging: chuẩn hóa kiểu dữ liệu, chuẩn hóa mã định danh (user_id, order_id, product_id, shop_id), loại bỏ bản ghi trùng kỹ thuật.
+- Mart/warehouse: mô hình hóa bảng theo chủ đề: user_behavior, order_fact, product_perf, campaign_perf, retention_cohort.
+
+## Thiết kế bảng chính
+
+- Bảng `order_fact`: một dòng/bộ đơn hàng, có khóa (order_id), cột thời gian (order_time, order_date), giá trị tiền (item_price, shipping_fee, voucher_discount, payment_amount).
+- Bảng `order_item_fact`: một dòng/một sản phẩm trong đơn, khóa (order_id, item_id hoặc product_id), quantity, item_price, category, shop_id.
+- Bảng `user_dim`: thông tin hồ sơ người dùng, ngày đăng ký, kênh đăng ký, phân loại tier.
+- Bảng `product_dim`: thông tin sản phẩm, ngành hàng, thương hiệu, thuộc tính chính.
+- Bảng `user_behavior`: bảng sự kiện (view, add_to_cart, wishlist, purchase) với khóa (event_id hoặc user_id + event_time + session_id).
+
+## Mapping table
+
+- Bảng tra cứu map mã → nghĩa: category, order_status, payment_method, kênh đăng ký, tier.
+- Đặt tên `map_` + domain (vd: `map_category`, `map_order_status`); khóa `*_code` hoặc `*_id`, cột mô tả `*_name` hoặc `*_label`.
+- Full refresh, nguồn từ config/file tĩnh; dùng khi transform staging → mart để enrich.
+
+## Batch theo thời gian và idempotent
+
+- Tất cả job nhận tham số thời gian (load_date hoặc time_window) và đọc/ghi dữ liệu theo partition.
+- Logic ghi dữ liệu phải idempotent: cùng một khoảng thời gian chạy lại cho kết quả giống nhau (sử dụng overwrite partition + khóa tự nhiên để loại bỏ trùng).
+
+## Kiểm soát chất lượng dữ liệu
+
+- Xác định và kiểm tra các trường bắt buộc: user_id, order_id, order_time, product_id, quantity, price, payment_amount.
+- Kiểm tra range cơ bản: quantity > 0, price >= 0, payment_amount >= 0.
+- Kiểm tra tính nhất quán: tổng item_price + shipping_fee - voucher_discount xấp xỉ payment_amount trong ngưỡng cho phép.
+
+## Lưu trữ rác
+
+- Bản ghi bị loại (fail validation, trùng, lỗi format) ghi vào path riêng: `rejected/` hoặc `bad/` theo partition `load_date`.
+- Mỗi file/bảng rejected: tên có prefix `rejected_` + source (vd: `rejected_orders`, `rejected_order_items`), kèm cột `reject_reason`.
+- Đường dẫn rejected lấy từ config; tự động xóa hoặc rotate theo chính sách retention (vd: giữ 30 ngày).
+
+## DuckDB
+
+- Engine analytics in-process, không cần server; một database = một file `.duckdb`.
+- Đọc trực tiếp Parquet, CSV qua `read_parquet()`, `read_csv_auto()` mà không cần load hết vào memory.
+- Dùng cho raw/staging/mart pipeline quy mô nhỏ–vừa; đường dẫn DB lấy từ config hoặc biến môi trường.
+
+## Cấu hình và đường dẫn
+
+- Không hard-code đường dẫn, thông tin kết nối; dùng biến môi trường và file cấu hình (ví dụ `config/pipeline.yaml`) cho nguồn dữ liệu, bucket/path raw, staging, mart.
+
+## Logging và quan sát

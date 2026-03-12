@@ -1,0 +1,10 @@
+shopee:
+  base_url: https://shopee.vn
+  search_path: /api/v4/search/search_items
+  limit_per_page: 60
+  request_delay_sec: 1
+
+paths:
+  duckdb: data/shopee.duckdb
+  raw: data/raw
+  rejected: data/rejected
