@@ -7,22 +7,33 @@ sys.path.insert(0, str(Path(__file__).parent / "src" / "scraper-services"))
 
 from tiki_scraper import scrape_tiki
 
-KEYWORDS = ["áo thun nam", "điện thoại iphone", "giày thể thao nam", 
-            "laptop", "mỹ phẩm", "đồng hồ nam", "túi xách nữ"]
+CATEGORIES = {
+    "Áo":           ["áo thun nam", "áo sơ mi nam", "áo khoác nữ"],
+    "Quần":         ["quần jean nam", "quần tây nữ", "quần short nam"],
+    "Điện thoại":   ["điện thoại iphone", "samsung galaxy", "điện thoại xiaomi"],
+    "Giày":         ["giày thể thao nam", "giày cao gót nữ", "giày sneaker"],
+    "Dép":          ["dép lào nam", "dép sandal nữ"],
+    "Laptop":       ["laptop gaming", "macbook", "laptop văn phòng"],
+    "Mỹ phẩm":      ["son môi", "kem dưỡng da", "serum dưỡng da"],
+    "Đồng hồ":      ["đồng hồ nam", "đồng hồ nữ thời trang"],
+    "Túi xách":     ["túi xách nữ", "ba lô nam", "ví da nam"],
+    "Phụ kiện":     ["tai nghe bluetooth", "sạc dự phòng", "ốp lưng điện thoại"],
+}
 
 def job():
     demo = "--demo" in sys.argv
-    pages = 2 if demo else 5  # 5 trang x 50 sp = 250 sp/keyword
+    pages = 1 if demo else 3
     output_dir = str(Path(__file__).parent / "data")
 
     print(f"\n[{time.strftime('%Y-%m-%d %H:%M:%S')}] BẮT ĐẦU CHU KỲ CÀO DỮ LIỆU ĐỊNH KỲ...")
     
-    for kw in KEYWORDS:
-        print(f"\n---> Đang cào dữ liệu cho từ khóa: '{kw}' | Pages: {pages} | Demo: {demo}")
-        try:
-            scrape_tiki(kw, pages, output_dir)
-        except Exception as e:
-            print(f"[!] Lỗi khi cào '{kw}': {e}")
+    for danh_muc, keywords in CATEGORIES.items():
+        for kw in keywords:
+            print(f"\n---> Danh mục: [{danh_muc}] | Từ khóa: '{kw}' | Pages: {pages}")
+            try:
+                scrape_tiki(kw, pages, output_dir, danh_muc=danh_muc)
+            except Exception as e:
+                print(f"[!] Lỗi khi cào '{kw}': {e}")
             
     print(f"\n[{time.strftime('%Y-%m-%d %H:%M:%S')}] HOÀN THÀNH TOÀN BỘ CHU KỲ. Đang ngủ chờ 1 tiếng nữa...\n")
 
