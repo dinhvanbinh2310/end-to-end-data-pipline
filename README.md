@@ -54,13 +54,16 @@ BigQuery (nếu cần):
 ```
 
 ## Chạy clean_data.py
-pip install pandas  (nếu chưa tải thư viện)
+pip install pyarrow  (nếu chưa tải thư viện)
 
-# Default (đọc data/raw/response.json)
-python clean_data.py (cd vào đúng thư viện để chạy)
+# 1. Chạy mặc định — tự tìm DB ở ../../data/tiki_scraped_data_raw.duckdb
+python clean_data.py
 
-# Chỉ định file khác
-python clean_data.py --input path/to/file.json
+# 2. Chỉ định đường dẫn DB cụ thể (nếu chạy từ thư mục khác)
+python clean_data.py --db data/tiki_scraped_data_raw.duckdb
+
+# 3. Chỉ đọc 100 bản ghi đầu — dùng để TEST NHANH xem output đúng chưa
+python clean_data.py --db data/tiki_scraped_data_raw.duckdb --limit 100
 
 
 ## Cấu hình
