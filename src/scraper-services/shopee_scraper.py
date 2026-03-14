@@ -3,6 +3,7 @@ import json
 import time
 import requests
 import random
+from typing import cast
 import pandas as pd
 import duckdb
 from datetime import datetime
@@ -137,7 +138,7 @@ def scrape_shopee_via_bing(keyword: str, max_pages: int, output_dir: str):
             crawl_time VARCHAR
         )
     """)
-    con.append("scraped_items", df)
+    con.append("scraped_items", cast(pd.DataFrame, df))
     con.close()
     
     print(f"[*] THÀNH CÔNG! Lách luật an toàn. Đã lưu {len(df)} sản phẩm vào: {db_path} (Bảng: scraped_items)")

@@ -1,4 +1,5 @@
 duckdb>=0.10.0
+schedule>=1.2.0
 requests>=2.31.0
 pyyaml>=6.0
 pandas>=2.0.0
