@@ -8,3 +8,9 @@ paths:
   duckdb: data/shopee.duckdb
   raw: data/raw
   rejected: data/rejected
+
+warehouse:
+  type: bigquery
+  project_id: pipline-end-to-end
+  dataset: shopee_warehouse
+  credentials: config/credentials/bq-credentials.json

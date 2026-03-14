@@ -27,12 +27,20 @@ Nếu dùng nhiều Python (ServBay, Miniconda...):
 > python -m pip install -r requirements.txt
 ```
 
+BigQuery (nếu cần):
+
+```
+> pip install google-cloud-bigquery
+> python -m pip install google-cloud-bigquery
+```
+
 ## Chạy
 
 ```
 > python run_crawl.py
 > python run_crawl.py laptop 2025-03-12
 > python run_crawl.py --demo
+> python run clean
 ```
 
 ## Cấu hình
