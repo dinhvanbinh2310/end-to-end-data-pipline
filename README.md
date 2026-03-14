@@ -66,3 +66,51 @@ python clean_data.py --input path/to/file.json
 ```
 > python run_crawl.py "áo thun nam" 2
 ```
+
+## Crawl liên tục 24/24 (1 lần mỗi giờ)
+
+Script `run_crawl.py` đã hỗ trợ chạy liên tục theo chu kỳ.
+
+1. Refresh sản phẩm hiện có trong DB (khuyến nghị):
+
+```
+python run_crawl.py --mode existing --interval-hours 1
+```
+
+2. Chạy 1 lần để test rồi thoát:
+
+```
+python run_crawl.py --mode existing --once
+```
+
+3. Nếu muốn cào lại theo danh sách từ khóa:
+
+```
+python run_crawl.py --mode keyword --interval-hours 1
+```
+
+## Xem dữ liệu bằng Streamlit
+
+1. Cài dependencies:
+
+```
+python -m pip install -r requirements.txt
+```
+
+2. Chạy frontend:
+
+```
+streamlit run streamlit_app.py
+```
+
+3. Mở trình duyệt tại địa chỉ Streamlit in ra trong terminal (thường là http://localhost:8501).
+
+Frontend sẽ tự động tìm dữ liệu ở một trong hai thư mục:
+- `data/`
+- `src/data-engine/data/`
+
+Các tab chính:
+- Raw: xem file JSON thô và JSON đã clean.
+- Staging: xem bảng `products`, `models`, `attributes`, `shops`.
+- Mart: xem `products_full.csv`, lọc theo category/shop và tìm kiếm theo thuộc tính bằng dropdown.
+- DuckDB: xem bảng trong `data/tiki_scraped_data.duckdb`.
