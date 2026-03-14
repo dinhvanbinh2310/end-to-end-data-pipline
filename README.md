@@ -52,3 +52,7 @@ BigQuery (nếu cần):
 ```
 > python -c "import duckdb; c=duckdb.connect('data/shopee.duckdb'); print(c.execute('SELECT COUNT(*), load_date FROM raw_products GROUP BY load_date').fetchall())"
 ```
+## Lệnh lấy  crawl mẫu 
+```
+> python run_crawl.py "áo thun nam" 2
+```
