@@ -1,0 +1,2195 @@
+{
+  "bff_meta": null,
+  "error": null,
+  "error_msg": null,
+  "data": {
+    "item": {
+      "item_id": 24161353607,
+      "shop_id": 196261835,
+      "item_status": "normal",
+      "status": 1,
+      "item_type": 0,
+      "reference_item_id": "",
+      "title": "Tai nghe có dây 3,5mm 4d Bass Dây tóc cao Dual Est Reo Tai nghe có độ trung thực cao với tai nghe micrô",
+      "image": "sg-11134201-821dh-mh5sz4cfxjim6c",
+      "label_ids": [
+        1000254,
+        1000255,
+        1000257,
+        1000258,
+        1000259,
+        1000260,
+        1000263,
+        1000264,
+        1000265,
+        1000267,
+        1000268,
+        1000269,
+        1000270,
+        1000273,
+        1000274,
+        1000276,
+        1000277,
+        1000278,
+        1000279,
+        1000921,
+        1000956,
+        1009396,
+        1012191,
+        298413316,
+        844931086908638,
+        700190087,
+        1007525,
+        822059849522188,
+        822120594278423,
+        1938661,
+        700765004,
+        998091005,
+        2048663,
+        298888404,
+        298898348,
+        2058596,
+        298893375,
+        2108654,
+        2098661,
+        2098666,
+        2113590,
+        2113595,
+        2113619,
+        298933399,
+        298928370,
+        700805015,
+        700805040,
+        700805055,
+        700805056,
+        700815079,
+        700815082,
+        700815091,
+        700805068,
+        700810073,
+        2143611,
+        700810083,
+        998156024,
+        2143619,
+        1718087960,
+        1428713,
+        998146014,
+        998146017,
+        998146019,
+        2143645,
+        2143672,
+        998146038,
+        2158587,
+        998171022,
+        2158617,
+        2153649,
+        998146097,
+        2153658,
+        2153663,
+        998171095,
+        298983321,
+        2158658,
+        700830016,
+        298988311,
+        1400705063,
+        298988334,
+        1400705079,
+        700830049,
+        1718252943,
+        298973406,
+        2098686,
+        2158712,
+        2098719,
+        298973470,
+        2158745,
+        2153753,
+        298988407,
+        298973500,
+        2143697,
+        299033331,
+        299033345,
+        2208608,
+        2218616,
+        2213611,
+        2218625,
+        2218641,
+        2218656,
+        299033403,
+        2213649,
+        2213651,
+        2203580,
+        2213660,
+        2203596,
+        299038330,
+        299048356,
+        2213674,
+        1119699,
+        2213728,
+        2203655,
+        2203690,
+        998236032,
+        998236057,
+        700915017,
+        299108332,
+        299108352,
+        299113353,
+        700810005,
+        299113372,
+        2278655,
+        299138366,
+        814381247172614,
+        2283632,
+        998296012,
+        998286049,
+        998296089,
+        998301003,
+        998291042,
+        998291062,
+        1009370,
+        834230286518295,
+        298703376
+      ],
+      "is_adult": false,
+      "is_preview": false,
+      "flag": 268500992,
+      "is_service_by_shopee": true,
+      "condition": 1,
+      "cat_id": 100535,
+      "has_low_fulfillment_rate": false,
+      "is_live_streaming_price": null,
+      "currency": "VND",
+      "brand": null,
+      "brand_id": 0,
+      "show_discount": 45,
+      "ctime": 1706513123,
+      "item_rating": {
+        "rating_star": 4.745819070904646
+      },
+      "cb_option": 1,
+      "has_model_with_available_shopee_stock": true,
+      "shop_location": "Nước ngoài",
+      "attributes": [
+        {
+          "name": "Kiểu kết nối",
+          "value": "Có dây",
+          "id": 100408,
+          "is_timestamp": false,
+          "brand_option": null,
+          "val_id": 2498,
+          "url": null,
+          "brand_id": null,
+          "full_url": null,
+          "type": null,
+          "item_attribute_type": null,
+          "name_tr": null,
+          "value_tr": null
+        },
+        {
+          "name": "Các loại tai nghe",
+          "value": "Nhét tai",
+          "id": 100519,
+          "is_timestamp": false,
+          "brand_option": null,
+          "val_id": 2909,
+          "url": null,
+          "brand_id": null,
+          "full_url": null,
+          "type": null,
+          "item_attribute_type": null,
+          "name_tr": null,
+          "value_tr": null
+        },
+        {
+          "name": "Game chuyên dụng",
+          "value": "Có",
+          "id": 100381,
+          "is_timestamp": false,
+          "brand_option": null,
+          "val_id": 2538,
+          "url": null,
+          "brand_id": null,
+          "full_url": null,
+          "type": null,
+          "item_attribute_type": null,
+          "name_tr": null,
+          "value_tr": null
+        },
+        {
+          "name": "Thiết bị âm thanh tương thích",
+          "value": "điện thoại di động, PC & Laptop",
+          "id": 100516,
+          "is_timestamp": false,
+          "brand_option": null,
+          "val_id": 2867,
+          "url": null,
+          "brand_id": null,
+          "full_url": null,
+          "type": null,
+          "item_attribute_type": null,
+          "name_tr": null,
+          "value_tr": null
+        }
+      ],
+      "rich_text_description": {
+        "paragraph_list": [
+          {
+            "type": 0,
+            "text": "Các tính năng:",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "1. Thời trang: Sản phẩm này có thiết kế hốc cung đơn giản, quy trình sơn piano và thiết kế vòng phủ chân không mang đến khí chất thời trang kín đáo, nội thất nghiêm ngặt, bố trí âm thanh chuyên nghiệp và mang lại trải nghiệm Chất lượng tuyệt vời..",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "2. Chất lượng âm thanh sắc nét: Sản phẩm này có mẫu tai nghe kín mới, tai nghe không dây, thân máy nhỏ gọn và thời trang, không có mufla, với loa đơn vị đôi, để có được âm thanh sắc nét và làm cho việc nghe của bạn trở nên gây nghiện hơn.",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "3. Hiệu ứng âm thanh chất lượng cao: mạch từ hiệu suất cao được cá nhân hóa đặc biệt cuộn dây thoại bên ngoài 10 màng, chất lượng âm thanh gây sốc như thể đó là một buổi hòa nhạc.",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "4. Thoải mái: Sản phẩm này dựa trên thiết kế tiện dụng, kết hợp với thiết kế bông tai nhân bản, hai phương pháp sử dụng, có thể sử dụng lâu dài mà không bị đau, sử dụng loại móc tai để chỉ ra hiệu quả giảm Nbicta Chạy, mạnh mẽ hơn.",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "5. Cuộn dây tác động kép bốn lõi: Tai nghe này có thiết kế cuộn dây bốn lõi tác động kép cho chất lượng âm thanh sắc nét hơn.",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 10001,
+            "text": null,
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": 1
+          },
+          {
+            "type": 0,
+            "text": "Mô tả:",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "Tai nghe này rất thoải mái khi đeo và có chất lượng âm thanh rất rõ ràng, rất thích hợp để nghe nhạc hàng ngày.",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 10001,
+            "text": null,
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": 1
+          },
+          {
+            "type": 0,
+            "text": "THÔNG SỐ KỸ THUẬT:",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "Màu: trắng, đỏ, vàng, đen (tùy chọn)",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "Kích thước: 145 * 100 mm",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "Phương pháp trang điểm: in-ear",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "Nguồn đầu ra tai nghe: âm thanh và video di động",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "Đường kính phích cắm: 3,5 mm",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "Loại phích cắm: loại trực tiếp",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "Muốn trở thành tai nghe không dây: tai nghe có dây",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "Có hoặc không có micrô: Có",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "Nguyên lý âm thanh: vòng tròn động",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "Độ nhạy: 95 ± 3 (dB)",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 10001,
+            "text": null,
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": 2
+          },
+          {
+            "type": 0,
+            "text": "Gói bao gồm:",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "1pc * tai nghe thể thao",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 10001,
+            "text": null,
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": 2
+          },
+          {
+            "type": 0,
+            "text": "Ghi chú:",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "1. Thuộc tính sự khác biệt giữa các màn hình khác nhau, hình ảnh có thể không phản ánh màu sắc thực tế của mặt hàng. Chúng tôi đảm bảo phong cách giống như đã định nghĩa trong ảnh.",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 0,
+            "text": "2. Dẫn xuất cho phép đo thủ công và các phương pháp khử khác nhau, cho phép độ lệch 1-3mm. Cảm ơn bạn!",
+            "img_id": null,
+            "ratio": null,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 1,
+            "text": null,
+            "img_id": "cn-11134208-7ras8-mbhx8fwzvp2u33",
+            "ratio": 1,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 1,
+            "text": null,
+            "img_id": "cn-11134208-7ras8-mbhx8fwzx3na98",
+            "ratio": 1.137,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 1,
+            "text": null,
+            "img_id": "cn-11134208-7ras8-mbhx8fwzzws623",
+            "ratio": 0.689,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          },
+          {
+            "type": 1,
+            "text": null,
+            "img_id": "cn-11134208-7ras8-mbhx8fwzyi7q47",
+            "ratio": 0.639,
+            "description_type": 1,
+            "empty_paragraph_count": null
+          }
+        ],
+        "source_language": null
+      },
+      "invoice_option": null,
+      "is_category_failed": null,
+      "is_prescription_item": false,
+      "preview_info": null,
+      "show_prescription_feed": false,
+      "is_alcohol_product": false,
+      "is_infant_milk_formula_product": false,
+      "is_unavailable": false,
+      "is_partial_fulfilled": false,
+      "is_presale": false,
+      "is_presale_deposit_item": null,
+      "is_presale_deposit_made": null,
+      "description": "Các tính năng:\n1. Thời trang: Sản phẩm này có thiết kế hốc cung đơn giản, quy trình sơn piano và thiết kế vòng phủ chân không mang đến khí chất thời trang kín đáo, nội thất nghiêm ngặt, bố trí âm thanh chuyên nghiệp và mang lại trải nghiệm Chất lượng tuyệt vời..\n2. Chất lượng âm thanh sắc nét: Sản phẩm này có mẫu tai nghe kín mới, tai nghe không dây, thân máy nhỏ gọn và thời trang, không có mufla, với loa đơn vị đôi, để có được âm thanh sắc nét và làm cho việc nghe của bạn trở nên gây nghiện hơn.\n3. Hiệu ứng âm thanh chất lượng cao: mạch từ hiệu suất cao được cá nhân hóa đặc biệt cuộn dây thoại bên ngoài 10 màng, chất lượng âm thanh gây sốc như thể đó là một buổi hòa nhạc.\n4. Thoải mái: Sản phẩm này dựa trên thiết kế tiện dụng, kết hợp với thiết kế bông tai nhân bản, hai phương pháp sử dụng, có thể sử dụng lâu dài mà không bị đau, sử dụng loại móc tai để chỉ ra hiệu quả giảm Nbicta Chạy, mạnh mẽ hơn.\n5. Cuộn dây tác động kép bốn lõi: Tai nghe này có thiết kế cuộn dây bốn lõi tác động kép cho chất lượng âm thanh sắc nét hơn.\n\nMô tả:\nTai nghe này rất thoải mái khi đeo và có chất lượng âm thanh rất rõ ràng, rất thích hợp để nghe nhạc hàng ngày.\n\nTHÔNG SỐ KỸ THUẬT:\nMàu: trắng, đỏ, vàng, đen (tùy chọn)\nKích thước: 145 * 100 mm\nPhương pháp trang điểm: in-ear\nNguồn đầu ra tai nghe: âm thanh và video di động\nĐường kính phích cắm: 3,5 mm\nLoại phích cắm: loại trực tiếp\nMuốn trở thành tai nghe không dây: tai nghe có dây\nCó hoặc không có micrô: Có\nNguyên lý âm thanh: vòng tròn động\nĐộ nhạy: 95 ± 3 (dB)\n\n\nGói bao gồm:\n1pc * tai nghe thể thao\n\n\nGhi chú:\n1. Thuộc tính sự khác biệt giữa các màn hình khác nhau, hình ảnh có thể không phản ánh màu sắc thực tế của mặt hàng. Chúng tôi đảm bảo phong cách giống như đã định nghĩa trong ảnh.\n2. Dẫn xuất cho phép đo thủ công và các phương pháp khử khác nhau, cho phép độ lệch 1-3mm. Cảm ơn bạn!\n",
+      "categories": [
+        {
+          "catid": 100535,
+          "display_name": "Thiết Bị Âm Thanh",
+          "no_sub": false,
+          "is_default_subcat": false
+        },
+        {
+          "catid": 100578,
+          "display_name": "Tai nghe nhét tai & chụp tai",
+          "no_sub": true,
+          "is_default_subcat": false
+        }
+      ],
+      "fe_categories": [
+        {
+          "catid": 11035954,
+          "display_name": "Máy Tính & Laptop",
+          "no_sub": false,
+          "is_default_subcat": false
+        },
+        {
+          "catid": 11036023,
+          "display_name": "Gaming",
+          "no_sub": false,
+          "is_default_subcat": false
+        },
+        {
+          "catid": 11116436,
+          "display_name": "Tai Nghe",
+          "no_sub": true,
+          "is_default_subcat": false
+        }
+      ],
+      "item_has_video": false,
+      "presale_dday_start_time": null,
+      "is_lowest_price_at_shopee": null,
+      "display_description_disclosure_rsku_redirection": null,
+      "display_similar_sold": null,
+      "title_type": 1,
+      "authorized_brand_name": null,
+      "models": [
+        {
+          "item_id": 24161353607,
+          "status": 1,
+          "current_promotion_reserved_stock": null,
+          "name": "Vàng",
+          "promotion_id": 867158176497664,
+          "price": 4510000000,
+          "price_stocks": [
+            {
+              "allocated_stock": null,
+              "stock_breakdown_by_location": null,
+              "promotion_type": 301
+            },
+            {
+              "allocated_stock": null,
+              "stock_breakdown_by_location": null,
+              "promotion_type": 0
+            }
+          ],
+          "current_promotion_has_reserve_stock": false,
+          "normal_stock": null,
+          "extinfo": {
+            "tier_index": [
+              2
+            ],
+            "is_pre_order": false,
+            "estimated_days": 1
+          },
+          "price_before_discount": 8140000000,
+          "model_id": 250287371012,
+          "stock": null,
+          "has_gimmick_tag": false,
+          "key_measurement": null,
+          "sold": null,
+          "is_lowest_price_at_shopee": false,
+          "name_tr": null,
+          "is_clickable": true,
+          "is_grayout": false,
+          "has_stock": true
+        },
+        {
+          "item_id": 24161353607,
+          "status": 1,
+          "current_promotion_reserved_stock": null,
+          "name": "Đỏ",
+          "promotion_id": 867158176497664,
+          "price": 4620000000,
+          "price_stocks": [
+            {
+              "allocated_stock": null,
+              "stock_breakdown_by_location": null,
+              "promotion_type": 301
+            },
+            {
+              "allocated_stock": null,
+              "stock_breakdown_by_location": null,
+              "promotion_type": 0
+            }
+          ],
+          "current_promotion_has_reserve_stock": false,
+          "normal_stock": null,
+          "extinfo": {
+            "tier_index": [
+              3
+            ],
+            "is_pre_order": true,
+            "estimated_days": 10
+          },
+          "price_before_discount": 7150000000,
+          "model_id": 250287371013,
+          "stock": null,
+          "has_gimmick_tag": false,
+          "key_measurement": null,
+          "sold": null,
+          "is_lowest_price_at_shopee": false,
+          "name_tr": null,
+          "is_clickable": false,
+          "is_grayout": true,
+          "has_stock": false
+        },
+        {
+          "item_id": 24161353607,
+          "status": 1,
+          "current_promotion_reserved_stock": null,
+          "name": "Đen",
+          "promotion_id": 867158176497664,
+          "price": 4510000000,
+          "price_stocks": [
+            {
+              "allocated_stock": null,
+              "stock_breakdown_by_location": null,
+              "promotion_type": 301
+            },
+            {
+              "allocated_stock": null,
+              "stock_breakdown_by_location": null,
+              "promotion_type": 0
+            }
+          ],
+          "current_promotion_has_reserve_stock": false,
+          "normal_stock": null,
+          "extinfo": {
+            "tier_index": [
+              0
+            ],
+            "is_pre_order": false,
+            "estimated_days": 1
+          },
+          "price_before_discount": 7700000000,
+          "model_id": 250287371010,
+          "stock": null,
+          "has_gimmick_tag": false,
+          "key_measurement": null,
+          "sold": null,
+          "is_lowest_price_at_shopee": false,
+          "name_tr": null,
+          "is_clickable": true,
+          "is_grayout": false,
+          "has_stock": true
+        },
+        {
+          "item_id": 24161353607,
+          "status": 1,
+          "current_promotion_reserved_stock": null,
+          "name": "Trắng",
+          "promotion_id": 867158176497664,
+          "price": 4356000000,
+          "price_stocks": [
+            {
+              "allocated_stock": null,
+              "stock_breakdown_by_location": null,
+              "promotion_type": 301
+            },
+            {
+              "allocated_stock": null,
+              "stock_breakdown_by_location": null,
+              "promotion_type": 0
+            }
+          ],
+          "current_promotion_has_reserve_stock": false,
+          "normal_stock": null,
+          "extinfo": {
+            "tier_index": [
+              1
+            ],
+            "is_pre_order": false,
+            "estimated_days": 1
+          },
+          "price_before_discount": 7480000000,
+          "model_id": 250287371011,
+          "stock": null,
+          "has_gimmick_tag": false,
+          "key_measurement": null,
+          "sold": null,
+          "is_lowest_price_at_shopee": true,
+          "name_tr": null,
+          "is_clickable": true,
+          "is_grayout": false,
+          "has_stock": true
+        }
+      ],
+      "tier_variations": [
+        {
+          "name": "color",
+          "options": [
+            "Đen",
+            "Trắng",
+            "Vàng",
+            "Đỏ"
+          ],
+          "images": [
+            "sg-11134301-7ra2o-m4o4rgccb9fn44",
+            "sg-11134301-7ra3b-m4o4rhjwi3ybc2",
+            "sg-11134301-7ra24-m4o4riw6p2s2e8",
+            "sg-11134301-7ra1z-m4o4rm0jz13r2f"
+          ],
+          "properties": null,
+          "type": 0,
+          "summed_stocks": null,
+          "display_indicators": [
+            0,
+            0,
+            0,
+            2
+          ],
+          "name_tr": null,
+          "options_tr": null,
+          "selling_points": [
+            "",
+            "",
+            "",
+            ""
+          ],
+          "selling_points_tr": null
+        }
+      ],
+      "size_chart": null,
+      "size_chart_info": null,
+      "welcome_package_type": 0,
+      "is_free_gift": false,
+      "deep_discount": null,
+      "is_low_price_eligible": null,
+      "bundle_deal_info": {
+        "bundle_deal_id": 393115324723289,
+        "bundle_deal_label": "Mua 2 & giảm 20%",
+        "bundle_deal_rule": {
+          "rule_type": 2,
+          "min_amount": 2,
+          "fix_price": 0,
+          "discount_percentage": 20,
+          "discount_value": 0,
+          "additional_tiers": [
+            {
+              "min_amount": 4,
+              "fix_price": 0,
+              "discount_percentage": 25,
+              "discount_value": 0
+            },
+            {
+              "min_amount": 6,
+              "fix_price": 0,
+              "discount_percentage": 30,
+              "discount_value": 0
+            }
+          ]
+        }
+      },
+      "add_on_deal_info": null,
+      "shipping_icon_type": 0,
+      "badge_icon_type": 6,
+      "spl_info": null,
+      "estimated_days": 10,
+      "is_pre_order": true,
+      "is_free_shipping": false,
+      "overall_purchase_limit": null,
+      "min_purchase_limit": 0,
+      "is_hide_stock": false,
+      "stock": null,
+      "normal_stock": null,
+      "current_promotion_reserved_stock": null,
+      "can_use_wholesale": false,
+      "wholesale_tier_list": [],
+      "price": 4356000000,
+      "raw_discount": 45,
+      "hidden_price_display": null,
+      "price_min": 4356000000,
+      "price_max": 4510000000,
+      "price_before_discount": 7480000000,
+      "price_min_before_discount": 7480000000,
+      "price_max_before_discount": 8140000000,
+      "other_stock": null,
+      "discount_stock": null,
+      "current_promotion_has_reserve_stock": false,
+      "complaint_policy": null,
+      "show_recycling_info": null,
+      "should_show_amp_tag": true,
+      "all_models_has_pre_order": false,
+      "is_item_inherited": false,
+      "max_quantity": null,
+      "drug_details": null,
+      "selected_real_models": null,
+      "size_tier_variation_idx": null,
+      "is_fashion_item": false,
+      "social_proof_label": null,
+      "title_tr": null,
+      "description_tr": null,
+      "rich_text_description_tr": null,
+      "stock_display": "CÒN HÀNG",
+      "max_quantity_display": "CÒN HÀNG",
+      "disclaimer": null
+    },
+    "account": {
+      "user_id": 1085155491,
+      "is_new_user": true,
+      "default_address": {
+        "state": "Bình Dương",
+        "city": "Thành Phố Thuận An",
+        "district": "Phường Bình Chuẩn",
+        "town": "",
+        "zip_code": null,
+        "address": null,
+        "region": null,
+        "longitude": null,
+        "latitude": null,
+        "vn_data_version": "old"
+      },
+      "adult_consent": 0,
+      "birth_timestamp": 0
+    },
+    "product_images": {
+      "video": {
+        "video_id": "api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.16000031766031366.mp4",
+        "thumb_url": "sg-11110106-6v98o-midzkkvoqg3sc6_cover",
+        "duration": 16,
+        "version": 2,
+        "vid": "sg-11110106-6v98o-midzkkvoqg3sc6",
+        "formats": [
+          {
+            "format": 1600003,
+            "defn": "V480P",
+            "profile": "MP4",
+            "path": "api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.16000031766031366.mp4",
+            "url": "https://down-cvs-sg.vod.susercontent.com/api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.16000031766031366.mp4",
+            "width": 862,
+            "height": 480
+          }
+        ],
+        "default_format": {
+          "format": 1600323,
+          "defn": "V540P",
+          "profile": "MP4",
+          "path": "",
+          "url": "https://mms.vod.susercontent.com/api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.default.mp4",
+          "width": 888,
+          "height": 494
+        },
+        "mms_data": "{\"vid\":\"sg-11110106-6v98o-midzkkvoqg3sc6\",\"biz\":107,\"duration\":15637,\"create_time\":1766031365,\"update_time\":1766031367,\"serviceID\":2,\"cover\":\"https://down-aka-sg.img.susercontent.com/sg-11110106-6v98o-midzkkvoqg3sc6_cover\",\"formats\":[{\"format\":1600003,\"defn\":\"V480P\",\"profile\":\"MP4\",\"path\":\"api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.16000031766031366.mp4\",\"url\":\"https://down-cvs-sg.vod.susercontent.com/api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.16000031766031366.mp4\",\"width\":862,\"height\":480,\"bitrate\":327267,\"abitrate\":64175,\"duration\":15637,\"size\":776939,\"fps\":25,\"update_time\":1766031372,\"codec\":\"H264\"}],\"default_format\":{\"format\":1600323,\"defn\":\"V540P\",\"profile\":\"MP4\",\"path\":\"\",\"url\":\"https://mms.vod.susercontent.com/api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.default.mp4\",\"width\":888,\"height\":494,\"bitrate\":378256,\"abitrate\":32095,\"duration\":15627,\"size\":814771,\"fps\":25,\"update_time\":1766031376,\"codec\":\"H264\"}}",
+        "item_cover": null
+      },
+      "images": [
+        "sg-11134201-821dh-mh5sz4cfxjim6c",
+        "098445f14f0ce163a8c669ac70854ba7",
+        "sg-11134301-7rd59-lw573izuyw5o25",
+        "sg-11134301-7ra2n-m4o4r9ry00zo21",
+        "sg-11134301-7rd5n-lvsbp03zm89v68",
+        "sg-11134301-7rd74-lvsbp23apvj66f",
+        "115cba3dda4e6e5ab7372964902f2343",
+        "e3ce35657ba5220e318dae775f82cf34",
+        "71625f21b72e075b653a2a6d51e23efd"
+      ],
+      "first_tier_variations": [
+        {
+          "name": "Đen",
+          "image": "sg-11134301-7ra2o-m4o4rgccb9fn44",
+          "summed_stock": null,
+          "display_indicator": 0,
+          "show_find_similar": null,
+          "name_tr": null,
+          "selling_point": "",
+          "selling_point_tr": null,
+          "gallery_image": "sg-11134301-7ra2o-m4o4rgccb9fn44"
+        },
+        {
+          "name": "Trắng",
+          "image": "sg-11134301-7ra3b-m4o4rhjwi3ybc2",
+          "summed_stock": null,
+          "display_indicator": 0,
+          "show_find_similar": null,
+          "name_tr": null,
+          "selling_point": "",
+          "selling_point_tr": null,
+          "gallery_image": "sg-11134301-7ra3b-m4o4rhjwi3ybc2"
+        },
+        {
+          "name": "Vàng",
+          "image": "sg-11134301-7ra24-m4o4riw6p2s2e8",
+          "summed_stock": null,
+          "display_indicator": 0,
+          "show_find_similar": null,
+          "name_tr": null,
+          "selling_point": "",
+          "selling_point_tr": null,
+          "gallery_image": "sg-11134301-7ra24-m4o4riw6p2s2e8"
+        },
+        {
+          "name": "Đỏ",
+          "image": "sg-11134301-7ra1z-m4o4rm0jz13r2f",
+          "summed_stock": null,
+          "display_indicator": 0,
+          "show_find_similar": null,
+          "name_tr": null,
+          "selling_point": "",
+          "selling_point_tr": null,
+          "gallery_image": "sg-11134301-7ra1z-m4o4rm0jz13r2f"
+        }
+      ],
+      "sorted_variation_image_index_list": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "overlay": {
+        "type": 0,
+        "image": "vn-11134258-81ztc-mlood8522igyc3",
+        "preview_end_time": null,
+        "is_pre_order": null,
+        "description": ""
+      },
+      "makeup_preview": null,
+      "abnormal_status": "",
+      "promotion_images": [],
+      "long_images": null,
+      "shopee_video_info_list": [],
+      "shopee_video_rcmd_info": null,
+      "shopee_video_req_id": null,
+      "skincam": null,
+      "pdp_top_info_list": null,
+      "has_long_image": false,
+      "show_find_similar": null,
+      "try_it_on": null,
+      "show_find_similar_for_selection": false,
+      "beautycam": null,
+      "unavailable_item_recommendation": null,
+      "models": [
+        {
+          "tier_index": [
+            2
+          ],
+          "gallery_image": "sg-11134301-7ra24-m4o4riw6p2s2e8"
+        },
+        {
+          "tier_index": [
+            3
+          ],
+          "gallery_image": "sg-11134301-7ra1z-m4o4rm0jz13r2f"
+        },
+        {
+          "tier_index": [
+            0
+          ],
+          "gallery_image": "sg-11134301-7ra2o-m4o4rgccb9fn44"
+        },
+        {
+          "tier_index": [
+            1
+          ],
+          "gallery_image": "sg-11134301-7ra3b-m4o4rhjwi3ybc2"
+        }
+      ],
+      "gallery_contents": [
+        {
+          "image": null,
+          "video": {
+            "video_id": "api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.16000031766031366.mp4",
+            "thumb_url": "sg-11110106-6v98o-midzkkvoqg3sc6_cover",
+            "duration": 16,
+            "version": 2,
+            "vid": "sg-11110106-6v98o-midzkkvoqg3sc6",
+            "formats": [
+              {
+                "format": 1600003,
+                "defn": "V480P",
+                "profile": "MP4",
+                "path": "api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.16000031766031366.mp4",
+                "url": "https://down-cvs-sg.vod.susercontent.com/api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.16000031766031366.mp4",
+                "width": 862,
+                "height": 480
+              }
+            ],
+            "default_format": {
+              "format": 1600323,
+              "defn": "V540P",
+              "profile": "MP4",
+              "path": "",
+              "url": "https://mms.vod.susercontent.com/api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.default.mp4",
+              "width": 888,
+              "height": 494
+            },
+            "mms_data": "{\"vid\":\"sg-11110106-6v98o-midzkkvoqg3sc6\",\"biz\":107,\"duration\":15637,\"create_time\":1766031365,\"update_time\":1766031367,\"serviceID\":2,\"cover\":\"https://down-aka-sg.img.susercontent.com/sg-11110106-6v98o-midzkkvoqg3sc6_cover\",\"formats\":[{\"format\":1600003,\"defn\":\"V480P\",\"profile\":\"MP4\",\"path\":\"api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.16000031766031366.mp4\",\"url\":\"https://down-cvs-sg.vod.susercontent.com/api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.16000031766031366.mp4\",\"width\":862,\"height\":480,\"bitrate\":327267,\"abitrate\":64175,\"duration\":15637,\"size\":776939,\"fps\":25,\"update_time\":1766031372,\"codec\":\"H264\"}],\"default_format\":{\"format\":1600323,\"defn\":\"V540P\",\"profile\":\"MP4\",\"path\":\"\",\"url\":\"https://mms.vod.susercontent.com/api/v4/11110106/mms/sg-11110106-6v98o-midzkkvoqg3sc6.default.mp4\",\"width\":888,\"height\":494,\"bitrate\":378256,\"abitrate\":32095,\"duration\":15627,\"size\":814771,\"fps\":25,\"update_time\":1766031376,\"codec\":\"H264\"}}",
+            "item_cover": null
+          }
+        },
+        {
+          "image": {
+            "url": "sg-11134201-821dh-mh5sz4cfxjim6c",
+            "promotion_image_type": null,
+            "label_content": null,
+            "cmt_id": null
+          },
+          "video": null
+        },
+        {
+          "image": {
+            "url": "098445f14f0ce163a8c669ac70854ba7",
+            "promotion_image_type": null,
+            "label_content": null,
+            "cmt_id": null
+          },
+          "video": null
+        },
+        {
+          "image": {
+            "url": "sg-11134301-7rd59-lw573izuyw5o25",
+            "promotion_image_type": null,
+            "label_content": null,
+            "cmt_id": null
+          },
+          "video": null
+        },
+        {
+          "image": {
+            "url": "sg-11134301-7ra2n-m4o4r9ry00zo21",
+            "promotion_image_type": null,
+            "label_content": null,
+            "cmt_id": null
+          },
+          "video": null
+        },
+        {
+          "image": {
+            "url": "sg-11134301-7rd5n-lvsbp03zm89v68",
+            "promotion_image_type": null,
+            "label_content": null,
+            "cmt_id": null
+          },
+          "video": null
+        },
+        {
+          "image": {
+            "url": "sg-11134301-7rd74-lvsbp23apvj66f",
+            "promotion_image_type": null,
+            "label_content": null,
+            "cmt_id": null
+          },
+          "video": null
+        },
+        {
+          "image": {
+            "url": "115cba3dda4e6e5ab7372964902f2343",
+            "promotion_image_type": null,
+            "label_content": null,
+            "cmt_id": null
+          },
+          "video": null
+        },
+        {
+          "image": {
+            "url": "e3ce35657ba5220e318dae775f82cf34",
+            "promotion_image_type": null,
+            "label_content": null,
+            "cmt_id": null
+          },
+          "video": null
+        },
+        {
+          "image": {
+            "url": "71625f21b72e075b653a2a6d51e23efd",
+            "promotion_image_type": null,
+            "label_content": null,
+            "cmt_id": null
+          },
+          "video": null
+        }
+      ]
+    },
+    "product_price": {
+      "discount": 42,
+      "installment_info": null,
+      "spl_installment_info": null,
+      "pack_size": "",
+      "hide_price": false,
+      "price": {
+        "single_value": -1,
+        "range_min": 4356000000,
+        "range_max": 4510000000,
+        "price_mask": null
+      },
+      "price_before_discount": {
+        "single_value": -1,
+        "range_min": 7480000000,
+        "range_max": 8140000000,
+        "price_mask": null
+      },
+      "presale_price": null,
+      "lowest_past_price": null,
+      "labels": [
+        {
+          "type": 0,
+          "text": "Mua 2 & giảm 20%",
+          "color": "primary",
+          "display": "bundle_deal",
+          "exclusive_price": null,
+          "promotion_id": 393115324723289,
+          "voucher_ext_info": null
+        }
+      ],
+      "hide_discount": false,
+      "discount_text": null,
+      "show_final_price_indicator": null,
+      "final_price_vouchers": null,
+      "has_final_price": true,
+      "final_price_info": null,
+      "price_subtext": null
+    },
+    "flash_sale": null,
+    "flash_sale_preview": null,
+    "deep_discount": null,
+    "exclusive_price": null,
+    "exclusive_price_cta": null,
+    "product_meta": {
+      "show_lowest_price_guarantee": null,
+      "show_original_guarantee": null,
+      "show_best_price_guarantee": false,
+      "show_official_shop_label_in_title": false,
+      "show_shopee_verified_label": true,
+      "show_lowest_installment_guarantee": null,
+      "hide_sharing_button": false,
+      "hide_sold_count": false,
+      "show_description_translation_button": null
+    },
+    "product_review": {
+      "rating_star": 4.745819070904646,
+      "rating_count": [
+        30675,
+        611,
+        304,
+        972,
+        2497,
+        26291
+      ],
+      "total_rating_count": 30675,
+      "historical_sold": null,
+      "global_sold": null,
+      "liked": false,
+      "liked_count": 1193,
+      "cmt_count": 11164,
+      "should_move_ratings_above": null,
+      "review_rcmd_exp_group": null,
+      "display_global_sold": true,
+      "hide_rating": false,
+      "hide_buyer_gallery": false,
+      "hide_reviews": false,
+      "hide_other_product_reviews_in_shop": false,
+      "sold_count_disclosure": {
+        "type": 1
+      },
+      "historical_sold_display": "40k+",
+      "global_sold_display": "80k+",
+      "sold_count_display": "80k+"
+    },
+    "promotion_info": {
+      "spl": null,
+      "spl_lite": null,
+      "installment": null,
+      "wholesale": null,
+      "insurance": null,
+      "item_installment_eligibility": {
+        "is_cc_installment_payment_eligible": false,
+        "is_non_cc_installment_payment_eligible": false
+      }
+    },
+    "age_gate": {
+      "kyc": null
+    },
+    "shipping_meta": {
+      "show_fufilled_by_shopee": null,
+      "show_cod": null,
+      "show_mart": false,
+      "show_next_day_delivery": false
+    },
+    "product_shipping": {
+      "free_shipping": {
+        "min_spend": null,
+        "has_fss": false
+      },
+      "shipping_fee_info": {
+        "ship_from_location": "Nước ngoài",
+        "price": {
+          "single_value": 0,
+          "range_min": -1,
+          "range_max": -1,
+          "price_mask": null
+        },
+        "shipping_icon_type": 1,
+        "warning": null
+      },
+      "show_shipping_to": true,
+      "ungrouped_channel_infos": [],
+      "grouped_channel_infos_by_service_type": [
+        {
+          "name": "Vận Chuyển Nhanh",
+          "channel_infos": [
+            {
+              "channel_id": 58007,
+              "name": "Quốc tế Tiêu chuẩn - Standard International",
+              "price": {
+                "single_value": 0,
+                "range_min": -1,
+                "range_max": -1,
+                "price_mask": null
+              },
+              "price_before_discount": {
+                "single_value": 3000000000,
+                "range_min": -1,
+                "range_max": -1,
+                "price_mask": null
+              },
+              "channel_delivery_info": {
+                "has_edt": true,
+                "display_mode": "edt_by_date",
+                "estimated_delivery_date_from": 1773716415,
+                "estimated_delivery_date_to": 1774236223,
+                "estimated_delivery_time_min": 4,
+                "estimated_delivery_time_max": 10,
+                "delay_message": null,
+                "is_fastest_edt_channel": false,
+                "sla_message": "",
+                "show_edt": true,
+                "edt_text": "Nhận từ 17 Th03 - 23 Th03",
+                "formatted_edt_text": [
+                  {
+                    "template": "{pdp_guaranteed_get_by_date_range}",
+                    "format": null,
+                    "attributes": [
+                      {
+                        "type": 1,
+                        "key": "pdp_guaranteed_get_by_date_range",
+                        "value": {
+                          "value_str": "Nhận từ 17 Th03 - 23 Th03",
+                          "value_int": null
+                        },
+                        "format": null,
+                        "text_color": null,
+                        "text_hex_color": "#000000de"
+                      }
+                    ],
+                    "text_color": null,
+                    "text_hex_color": null
+                  }
+                ],
+                "formatted_pre_order_text": null,
+                "formatted_fbs_description_text": null,
+                "show_edt_as_header": false
+              },
+              "channel_promotion_infos": [
+                {
+                  "rule_id": 352826119753731,
+                  "type": 1,
+                  "display_mode": null,
+                  "discount_off": null,
+                  "min_spend": {
+                    "single_value": 0,
+                    "range_min": -1,
+                    "range_max": -1,
+                    "price_mask": null
+                  },
+                  "cap": null
+                }
+              ],
+              "warning": null,
+              "shipping_icon_type": null,
+              "lowest_bpsf_promotion_rule": null,
+              "service_type_info": "standard",
+              "is_integrated_channel": true,
+              "late_delivery_compensation": {
+                "type": 1,
+                "amount": 1500000000,
+                "is_guaranteed_edt": true,
+                "compensation_amount": null,
+                "text": null
+              },
+              "is_sst_included": false,
+              "display_text": {
+                "late_delivery_compensation": {
+                  "text": "Tặng Voucher {compensation_amount} nếu đơn giao sau thời gian trên.",
+                  "gdt_max": null,
+                  "compensation_amount": {
+                    "value": 1500000000
+                  }
+                },
+                "direct_delivery": null,
+                "fulfilled_by_shopee": null,
+                "spx_instant_delivery": null
+              },
+              "rule_type": 0,
+              "is_xdd_channel": false,
+              "show_shopee_plus_icon": false,
+              "xdd_value": null,
+              "hide_shipping_fee": null,
+              "edt_tracking_info": "{\"edt_min\":4,\"edt_max\":10,\"edt_min_hours\":98,\"edt_max_hours\":242,\"edt_display_identifier\":327689,\"buyer_address_hash\":\"tEAo3Ne\",\"is_cache_edt\":false}"
+            }
+          ]
+        },
+        {
+          "name": "Tủ Nhận Hàng",
+          "channel_infos": [
+            {
+              "channel_id": 58018,
+              "name": "Quốc tế - Tủ nhận hàng - Standard International",
+              "price": {
+                "single_value": 0,
+                "range_min": -1,
+                "range_max": -1,
+                "price_mask": null
+              },
+              "price_before_discount": {
+                "single_value": 3000000000,
+                "range_min": -1,
+                "range_max": -1,
+                "price_mask": null
+              },
+              "channel_delivery_info": {
+                "has_edt": true,
+                "display_mode": "edt_by_date",
+                "estimated_delivery_date_from": 1773741116,
+                "estimated_delivery_date_to": 1774000316,
+                "estimated_delivery_time_min": 4,
+                "estimated_delivery_time_max": 7,
+                "delay_message": null,
+                "is_fastest_edt_channel": false,
+                "sla_message": "",
+                "show_edt": true,
+                "edt_text": "Nhận từ 17 Th03 - 20 Th03",
+                "formatted_edt_text": [
+                  {
+                    "template": "{pdp_guaranteed_get_by_date_range}",
+                    "format": null,
+                    "attributes": [
+                      {
+                        "type": 1,
+                        "key": "pdp_guaranteed_get_by_date_range",
+                        "value": {
+                          "value_str": "Nhận từ 17 Th03 - 20 Th03",
+                          "value_int": null
+                        },
+                        "format": null,
+                        "text_color": null,
+                        "text_hex_color": "#000000de"
+                      }
+                    ],
+                    "text_color": null,
+                    "text_hex_color": null
+                  }
+                ],
+                "formatted_pre_order_text": null,
+                "formatted_fbs_description_text": null,
+                "show_edt_as_header": false
+              },
+              "channel_promotion_infos": [
+                {
+                  "rule_id": 419832542081025,
+                  "type": 1,
+                  "display_mode": null,
+                  "discount_off": null,
+                  "min_spend": {
+                    "single_value": 0,
+                    "range_min": -1,
+                    "range_max": -1,
+                    "price_mask": null
+                  },
+                  "cap": null
+                }
+              ],
+              "warning": null,
+              "shipping_icon_type": null,
+              "lowest_bpsf_promotion_rule": null,
+              "service_type_info": "self_collection",
+              "is_integrated_channel": true,
+              "late_delivery_compensation": {
+                "type": 1,
+                "amount": 1500000000,
+                "is_guaranteed_edt": true,
+                "compensation_amount": null,
+                "text": null
+              },
+              "is_sst_included": false,
+              "display_text": {
+                "late_delivery_compensation": {
+                  "text": "Tặng Voucher {compensation_amount} nếu đơn giao sau thời gian trên.",
+                  "gdt_max": null,
+                  "compensation_amount": {
+                    "value": 1500000000
+                  }
+                },
+                "direct_delivery": null,
+                "fulfilled_by_shopee": null,
+                "spx_instant_delivery": null
+              },
+              "rule_type": 0,
+              "is_xdd_channel": false,
+              "show_shopee_plus_icon": false,
+              "xdd_value": null,
+              "hide_shipping_fee": null,
+              "edt_tracking_info": "{\"edt_min\":4,\"edt_max\":7,\"edt_min_hours\":105,\"edt_max_hours\":177,\"edt_display_identifier\":327689,\"buyer_address_hash\":\"tEAo3Ne\",\"is_cache_edt\":false}"
+            }
+          ]
+        }
+      ],
+      "also_available_channel_name": "",
+      "pre_selected_shipping_channel": {
+        "channel_id": 58007,
+        "name": "Quốc tế Tiêu chuẩn - Standard International",
+        "price": {
+          "single_value": 0,
+          "range_min": -1,
+          "range_max": -1,
+          "price_mask": null
+        },
+        "price_before_discount": {
+          "single_value": 3000000000,
+          "range_min": -1,
+          "range_max": -1,
+          "price_mask": null
+        },
+        "channel_delivery_info": {
+          "has_edt": true,
+          "display_mode": "edt_by_date",
+          "estimated_delivery_date_from": 1773716415,
+          "estimated_delivery_date_to": 1774236223,
+          "estimated_delivery_time_min": 4,
+          "estimated_delivery_time_max": 10,
+          "delay_message": "",
+          "is_fastest_edt_channel": false,
+          "sla_message": "",
+          "show_edt": true,
+          "edt_text": "Nhận từ 17 Th03 - 23 Th03",
+          "formatted_edt_text": [
+            {
+              "template": "{pdp_guaranteed_get_by_date_range}",
+              "format": [],
+              "attributes": [
+                {
+                  "type": 1,
+                  "key": "pdp_guaranteed_get_by_date_range",
+                  "value": {
+                    "value_str": "Nhận từ 17 Th03 - 23 Th03",
+                    "value_int": null
+                  },
+                  "format": [],
+                  "text_color": null,
+                  "text_hex_color": "#000000de"
+                }
+              ],
+              "text_color": null,
+              "text_hex_color": null
+            }
+          ],
+          "formatted_pre_order_text": null,
+          "formatted_fbs_description_text": null,
+          "show_edt_as_header": false
+        },
+        "channel_promotion_infos": [
+          {
+            "rule_id": 352826119753731,
+            "type": 1,
+            "display_mode": 0,
+            "discount_off": 0,
+            "min_spend": {
+              "single_value": 0,
+              "range_min": -1,
+              "range_max": -1,
+              "price_mask": ""
+            },
+            "cap": 0
+          }
+        ],
+        "warning": {
+          "type": "",
+          "warning_msg": ""
+        },
+        "shipping_icon_type": null,
+        "lowest_bpsf_promotion_rule": null,
+        "service_type_info": "standard",
+        "is_integrated_channel": true,
+        "late_delivery_compensation": {
+          "type": 1,
+          "amount": 1500000000,
+          "is_guaranteed_edt": true,
+          "compensation_amount": {
+            "value": 1500000000
+          },
+          "text": ""
+        },
+        "is_sst_included": false,
+        "display_text": {
+          "late_delivery_compensation": {
+            "text": "Tặng Voucher {compensation_amount} nếu đơn giao sau thời gian trên.",
+            "gdt_max": null,
+            "compensation_amount": {
+              "value": 1500000000
+            }
+          },
+          "direct_delivery": null,
+          "fulfilled_by_shopee": null,
+          "spx_instant_delivery": null
+        },
+        "rule_type": 0,
+        "is_xdd_channel": false,
+        "show_shopee_plus_icon": false,
+        "xdd_value": 0,
+        "hide_shipping_fee": null,
+        "edt_tracking_info": null
+      },
+      "show_grouped_channel_first": true,
+      "is_item_with_price_range": true,
+      "also_available_channel_icon_type": null,
+      "pre_order_text": "Một số sản phẩm là Hàng Đặt Trước (có hàng sau 10 ngày)",
+      "selected_late_delivery_compensation_for_drawer": null,
+      "shipping_info_text": {
+        "text_template": "(Hàng đặt trước) Nhận hàng dự kiến 17 Th03 - 23 Th03, phí giao {shipping_fee}",
+        "shipping_fee": 0,
+        "edt_from": 1773716415,
+        "edt_to": 1774236223,
+        "show_shipping_fee_suffix": true,
+        "formatted_text": {
+          "edt": {
+            "template": "{label_pre_order_ships_in_n_days}{+label_get_by++label_date_range_placeholder_underscore}",
+            "format": null,
+            "attributes": [
+              {
+                "type": 1,
+                "key": "label_pre_order_ships_in_n_days",
+                "value": {
+                  "value_str": "Hàng Đặt Trước (có hàng sau 10 ngày)",
+                  "value_int": null
+                },
+                "format": [
+                  1,
+                  5
+                ],
+                "text_color": null,
+                "text_hex_color": "#dc720e"
+              },
+              {
+                "type": 1,
+                "key": "+label_get_by++label_date_range_placeholder_underscore",
+                "value": {
+                  "value_str": " Nhận trong 17 Th03 - 23 Th03",
+                  "value_int": null
+                },
+                "format": null,
+                "text_color": null,
+                "text_hex_color": "#000000de"
+              }
+            ],
+            "text_color": null,
+            "text_hex_color": null
+          },
+          "shipping_fee": {
+            "template": "Phí ship {shipping_fee}",
+            "format": [
+              1
+            ],
+            "attributes": [
+              {
+                "type": 2,
+                "key": "shipping_fee",
+                "value": {
+                  "value_str": null,
+                  "value_int": 0
+                },
+                "format": null,
+                "text_color": null,
+                "text_hex_color": "#219787"
+              }
+            ],
+            "text_color": null,
+            "text_hex_color": "#219787"
+          },
+          "late_delivery_compensation": {
+            "template": "Tặng Voucher {compensation_amount} nếu đơn giao sau thời gian trên.",
+            "format": null,
+            "attributes": [
+              {
+                "type": 2,
+                "key": "compensation_amount",
+                "value": {
+                  "value_str": null,
+                  "value_int": 1500000000
+                },
+                "format": null,
+                "text_color": null,
+                "text_hex_color": null
+              }
+            ],
+            "text_color": null,
+            "text_hex_color": null
+          },
+          "fbs_description": null,
+          "display_edt_text_first_line": true,
+          "should_wrap_edt_text_by_attribute": false
+        },
+        "highlight_free_shipping": false
+      },
+      "formatted_pre_order_text": {
+        "template": "{label_pre_order_ships_in_n_days}",
+        "format": null,
+        "attributes": [
+          {
+            "type": 1,
+            "key": "label_pre_order_ships_in_n_days",
+            "value": {
+              "value_str": "Hàng Đặt Trước (có hàng sau 10 ngày)",
+              "value_int": null
+            },
+            "format": [
+              1,
+              5
+            ],
+            "text_color": null,
+            "text_hex_color": "#dc720e"
+          }
+        ],
+        "text_color": null,
+        "text_hex_color": null
+      },
+      "has_free_return": null,
+      "model_id": 250287371010,
+      "delivery_address": {
+        "state": "Bình Dương",
+        "city": "Thành Phố Thuận An",
+        "district": "Phường Bình Chuẩn",
+        "town": "",
+        "zip_code": "",
+        "address": null,
+        "region": null,
+        "longitude": 106.73602251335979,
+        "latitude": 10.976168074880775,
+        "vn_data_version": "old"
+      }
+    },
+    "shop_vouchers": null,
+    "free_return": null,
+    "coin_info": {
+      "spend_cash_unit": 100000,
+      "coin_earn_items": [],
+      "coin_earn_label": null
+    },
+    "product_attributes": {
+      "attrs": [
+        {
+          "name": "Kho",
+          "value": "CÒN HÀNG",
+          "id": null,
+          "is_timestamp": null,
+          "brand_option": null,
+          "val_id": null,
+          "url": null,
+          "brand_id": null,
+          "full_url": null,
+          "type": 7,
+          "item_attribute_type": null,
+          "name_tr": null,
+          "value_tr": null
+        },
+        {
+          "name": "Kiểu kết nối",
+          "value": "Có dây",
+          "id": 100408,
+          "is_timestamp": null,
+          "brand_option": null,
+          "val_id": null,
+          "url": null,
+          "brand_id": null,
+          "full_url": null,
+          "type": 5,
+          "item_attribute_type": null,
+          "name_tr": null,
+          "value_tr": null
+        },
+        {
+          "name": "Các loại tai nghe",
+          "value": "Nhét tai",
+          "id": 100519,
+          "is_timestamp": null,
+          "brand_option": null,
+          "val_id": null,
+          "url": null,
+          "brand_id": null,
+          "full_url": null,
+          "type": 5,
+          "item_attribute_type": null,
+          "name_tr": null,
+          "value_tr": null
+        },
+        {
+          "name": "Game chuyên dụng",
+          "value": "Có",
+          "id": 100381,
+          "is_timestamp": null,
+          "brand_option": null,
+          "val_id": null,
+          "url": null,
+          "brand_id": null,
+          "full_url": null,
+          "type": 5,
+          "item_attribute_type": null,
+          "name_tr": null,
+          "value_tr": null
+        },
+        {
+          "name": "Thiết bị âm thanh tương thích",
+          "value": "điện thoại di động, PC & Laptop",
+          "id": 100516,
+          "is_timestamp": null,
+          "brand_option": null,
+          "val_id": null,
+          "url": null,
+          "brand_id": null,
+          "full_url": null,
+          "type": 5,
+          "item_attribute_type": null,
+          "name_tr": null,
+          "value_tr": null
+        },
+        {
+          "name": "Gửi từ",
+          "value": "Nước ngoài",
+          "id": null,
+          "is_timestamp": null,
+          "brand_option": null,
+          "val_id": null,
+          "url": null,
+          "brand_id": null,
+          "full_url": null,
+          "type": 6,
+          "item_attribute_type": null,
+          "name_tr": null,
+          "value_tr": null
+        }
+      ],
+      "categories": [
+        {
+          "catid": 11035954,
+          "display_name": "Máy Tính & Laptop",
+          "no_sub": false,
+          "is_default_subcat": false
+        },
+        {
+          "catid": 11036023,
+          "display_name": "Gaming",
+          "no_sub": false,
+          "is_default_subcat": false
+        },
+        {
+          "catid": 11116436,
+          "display_name": "Tai Nghe",
+          "no_sub": true,
+          "is_default_subcat": false
+        }
+      ],
+      "related_items": []
+    },
+    "shop_detailed": {
+      "shopid": 196261835,
+      "userid": 196264785,
+      "last_active_time": 1773365339,
+      "vacation": false,
+      "place": null,
+      "account": {
+        "portrait": "cn-11134216-7r98o-lvy9c93i0aitd5",
+        "username": "topick_global",
+        "status": 1
+      },
+      "is_shopee_verified": true,
+      "is_preferred_plus_seller": false,
+      "is_official_shop": false,
+      "shop_location": null,
+      "item_count": 430913,
+      "rating_star": 4.736319,
+      "response_rate": 100,
+      "session_info": null,
+      "name": "Topick Global",
+      "ctime": 1573122934,
+      "response_time": 1,
+      "follower_count": 5461982,
+      "show_official_shop_label": false,
+      "rating_bad": 174903,
+      "rating_good": 6592839,
+      "rating_normal": 290174,
+      "session_infos": null,
+      "status": 1,
+      "is_individual_seller": null,
+      "is_mart": false,
+      "favorite_shop_info": null,
+      "is_3pf": false,
+      "sold_total": null,
+      "is_shopee_choice": false,
+      "is_high_end": false,
+      "banner": {
+        "shopee_choice": null
+      },
+      "authorized_brand": null,
+      "is_scs": false,
+      "shop_location_tr": null,
+      "sold_total_display": null,
+      "is_outlet": false,
+      "display_fbs_logo": false,
+      "is_chatroom_online": true,
+      "outlet_shop": null,
+      "vacation_status": null
+    },
+    "age_gate_control": null,
+    "abnormal_popup": null,
+    "return_on_spot": null,
+    "tax_disclaimer": null,
+    "alcohol_disclaimer": null,
+    "design_control": {
+      "use_new_revamp_first_screen": true,
+      "display_on_time_delivery_guarantee": true,
+      "disable_price_with_variation": false,
+      "display_direct_delivery": false,
+      "use_new_featured_video_revamp": null,
+      "first_screen_revamp_abtest_group": null,
+      "display_choice_customised_section": false,
+      "is_support_fbs_enabled": false,
+      "top_section_featured_video_ab_test_group": null,
+      "enable_ksp_config": true,
+      "disable_main_page_select_variation": false,
+      "support_shop_review_preview": null,
+      "pdp_revamp_phase1_improvement_ui_review_down": null,
+      "display_fashion_attributes": null,
+      "display_fashion_review_section": null,
+      "display_fashion_first_screen": null,
+      "enable_fashion_review_improvements": null,
+      "display_fbs_floating_counter": null,
+      "display_shipping_drawer_new_free_shipping_text": true,
+      "display_shipping_drawer_new_free_shipping_ui": true,
+      "shift_featured_videos_above_review_ratings_section": null,
+      "enable_fashion_featured_videos_improvements": null,
+      "hide_shipping_channel_promotion_text": false
+    },
+    "shopee_free_return": null,
+    "detail_level": 0,
+    "removed_fields": null,
+    "size_guide": null,
+    "designer_info": null,
+    "shipping_info": null,
+    "button_group": {
+      "buy_with_voucher": null,
+      "ineligible_user_platform_exclusive_sku": null
+    },
+    "ongoing_banner": null,
+    "teaser_banner": null,
+    "price_breakdown": null,
+    "installment_drawer": {
+      "priority": [
+        0,
+        1
+      ],
+      "spl": null,
+      "bank": {
+        "channels": null
+      },
+      "credit_card": null
+    },
+    "service_entrance": {
+      "services": [
+        {
+          "text": "Shopee Xử Lý",
+          "type": null,
+          "id": 17
+        },
+        {
+          "text": "Trả hàng miễn phí 15 ngày",
+          "type": null,
+          "id": 18
+        }
+      ]
+    },
+    "service_drawer": {
+      "services": [
+        {
+          "title": "Shopee Xử Lý",
+          "description": "Xử Lý (hay còn gọi là Shopee Xử Lý)\nLà các sản phẩm được Shopee đảm bảo về chất lượng vận hành từ khâu chuẩn bị, đóng gói, bàn giao cho đơn vị vận chuyển thay cho Người Bán.",
+          "type": null,
+          "free_return": null,
+          "insurance": null,
+          "id": 17,
+          "redirection_url": "",
+          "icon": "vn-11134258-7ras8-m477foi6ss0ff7",
+          "insurance_drawer": null
+        },
+        {
+          "title": "Trả hàng miễn phí 15 ngày",
+          "description": "Miễn phí Trả hàng trong 15 ngày để đảm bảo bạn hoàn toàn có thể yên tâm khi mua hàng ở Shopee.\nNgoài ra, tại thời điểm nhận hàng, bạn có thể đồng kiểm và được trả hàng miễn phí.",
+          "type": null,
+          "free_return": null,
+          "insurance": null,
+          "id": 18,
+          "redirection_url": "https://shopee.vn/m/shopee-tra-hang-sieu-de",
+          "icon": "vn-11134258-7ras8-m1ml7ywc9y9r4d",
+          "insurance_drawer": null
+        }
+      ]
+    },
+    "membership_exclusive": null,
+    "membership_exclusive_teaser": null,
+    "trade_in": null,
+    "product_description": {
+      "paragraph_list": [
+        {
+          "type": 0,
+          "text": "Các tính năng:",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "1. Thời trang: Sản phẩm này có thiết kế hốc cung đơn giản, quy trình sơn piano và thiết kế vòng phủ chân không mang đến khí chất thời trang kín đáo, nội thất nghiêm ngặt, bố trí âm thanh chuyên nghiệp và mang lại trải nghiệm Chất lượng tuyệt vời..",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "2. Chất lượng âm thanh sắc nét: Sản phẩm này có mẫu tai nghe kín mới, tai nghe không dây, thân máy nhỏ gọn và thời trang, không có mufla, với loa đơn vị đôi, để có được âm thanh sắc nét và làm cho việc nghe của bạn trở nên gây nghiện hơn.",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "3. Hiệu ứng âm thanh chất lượng cao: mạch từ hiệu suất cao được cá nhân hóa đặc biệt cuộn dây thoại bên ngoài 10 màng, chất lượng âm thanh gây sốc như thể đó là một buổi hòa nhạc.",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "4. Thoải mái: Sản phẩm này dựa trên thiết kế tiện dụng, kết hợp với thiết kế bông tai nhân bản, hai phương pháp sử dụng, có thể sử dụng lâu dài mà không bị đau, sử dụng loại móc tai để chỉ ra hiệu quả giảm Nbicta Chạy, mạnh mẽ hơn.",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "5. Cuộn dây tác động kép bốn lõi: Tai nghe này có thiết kế cuộn dây bốn lõi tác động kép cho chất lượng âm thanh sắc nét hơn.",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 10001,
+          "text": null,
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": 1
+        },
+        {
+          "type": 0,
+          "text": "Mô tả:",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "Tai nghe này rất thoải mái khi đeo và có chất lượng âm thanh rất rõ ràng, rất thích hợp để nghe nhạc hàng ngày.",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 10001,
+          "text": null,
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": 1
+        },
+        {
+          "type": 0,
+          "text": "THÔNG SỐ KỸ THUẬT:",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "Màu: trắng, đỏ, vàng, đen (tùy chọn)",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "Kích thước: 145 * 100 mm",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "Phương pháp trang điểm: in-ear",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "Nguồn đầu ra tai nghe: âm thanh và video di động",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "Đường kính phích cắm: 3,5 mm",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "Loại phích cắm: loại trực tiếp",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "Muốn trở thành tai nghe không dây: tai nghe có dây",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "Có hoặc không có micrô: Có",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "Nguyên lý âm thanh: vòng tròn động",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "Độ nhạy: 95 ± 3 (dB)",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 10001,
+          "text": null,
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": 2
+        },
+        {
+          "type": 0,
+          "text": "Gói bao gồm:",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "1pc * tai nghe thể thao",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 10001,
+          "text": null,
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": 2
+        },
+        {
+          "type": 0,
+          "text": "Ghi chú:",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "1. Thuộc tính sự khác biệt giữa các màn hình khác nhau, hình ảnh có thể không phản ánh màu sắc thực tế của mặt hàng. Chúng tôi đảm bảo phong cách giống như đã định nghĩa trong ảnh.",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 0,
+          "text": "2. Dẫn xuất cho phép đo thủ công và các phương pháp khử khác nhau, cho phép độ lệch 1-3mm. Cảm ơn bạn!",
+          "img_id": null,
+          "ratio": null,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 1,
+          "text": null,
+          "img_id": "cn-11134208-7ras8-mbhx8fwzvp2u33",
+          "ratio": 1,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 1,
+          "text": null,
+          "img_id": "cn-11134208-7ras8-mbhx8fwzx3na98",
+          "ratio": 1.137,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 1,
+          "text": null,
+          "img_id": "cn-11134208-7ras8-mbhx8fwzzws623",
+          "ratio": 0.689,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        },
+        {
+          "type": 1,
+          "text": null,
+          "img_id": "cn-11134208-7ras8-mbhx8fwzyi7q47",
+          "ratio": 0.639,
+          "description_type": 1,
+          "empty_paragraph_count": null
+        }
+      ],
+      "source_language": ""
+    },
+    "size_info": null,
+    "size_recommendation": null,
+    "translation_status": 0,
+    "product_description_tr": null
+  }
+}

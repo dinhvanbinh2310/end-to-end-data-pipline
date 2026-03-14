@@ -43,6 +43,16 @@ BigQuery (nếu cần):
 > python run clean
 ```
 
+## Chạy clean_data.py
+pip install pandas  (nếu chưa tải thư viện)
+
+# Default (đọc data/raw/response.json)
+python clean_data.py (cd vào đúng thư viện để chạy)
+
+# Chỉ định file khác
+python clean_data.py --input path/to/file.json
+
+
 ## Cấu hình
 
 `config/pipeline.yaml`: `shopee.base_url`, `shopee.limit_per_page`, `paths.duckdb` (override: `DUCKDB_PATH`).
