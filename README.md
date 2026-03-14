@@ -8,11 +8,21 @@ Pipeline phân tích hành vi mua hàng trên Shopee: crawl dữ liệu từ API
 ├── config/
 │   └── pipeline.yaml     # cấu hình Shopee API, đường dẫn
 ├── src/
+│   ├── migration/        
+│   │   └── create_raw_table.py  # Script tạo cấu trúc bảng chuẩn V2
 │   └── crawler.py        # logic crawl + lưu DuckDB
 ├── run_crawl.py          # entry point
 ├── requirements.txt
 └── data/
     └── shopee.duckdb     # database (tự tạo khi chạy)
+```
+
+## Khởi tạo Database (Bắt buộc)
+
+Trước khi chạy cào dữ liệu lần đầu tiên, team cần chạy file Migration để DuckDB thiết lập bảng `scraped_raw_items_v2` với các cột Data chuẩn:
+
+```bash
+> python src/migration/create_raw_table.py
 ```
 
 ## Cài đặt

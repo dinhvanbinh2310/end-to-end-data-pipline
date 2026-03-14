@@ -43,123 +43,21 @@ def fetch_tiki_search_items(keyword: str, page_number: int, limit: int = 50) -> 
         print(f"[!] Lỗi kết nối Tiki: {e}")
         return {}
 
+import json
 
-def fetch_tiki_product_detail(item_id: int) -> dict:
-    url = f"https://tiki.vn/api/v2/products/{item_id}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "application/json, text/plain, */*",
-    }
-
-    try:
-        r = requests.get(url, headers=headers, timeout=15)
-        if r.status_code != 200:
-            print(f"[!] Không lấy được chi tiết item {item_id}. HTTP: {r.status_code}")
-            return {}
-        return r.json()
-    except Exception as e:
-        print(f"[!] Lỗi khi lấy chi tiết item {item_id}: {e}")
-        return {}
-
-def flatten_tiki_item(item: dict) -> dict:
-    # Lấy ngắn miêu tả từ thẻ mô tả ngắn (nếu có)
-    short_desc = item.get("short_description", "")
-    
+def flatten_tiki_item(item: dict, danh_muc: str = "") -> dict:
+    # Lấy dữ liệu theo đúng chuẩn Migration V2 của sếp
     return {
-        "itemid": item.get("id"),
-        "shopid": item.get("seller_product_id") or 0,
-        "name": item.get("name"),  # Dữ liệu chính để phân tích văn bản
-        "price_min": item.get("price") or item.get("original_price"),
-        "price_max": item.get("original_price"),
-        "sold": item.get("quantity_sold", {}).get("value", 0),
-        "rating_star": item.get("rating_average", 0.0),
-        "category_id": item.get("primary_category"),
-        "raw_content": short_desc,
-        "crawl_time": str(datetime.now())
+        "thoi_diem": str(datetime.now()),
+        "nen_tang": "tiki",
+        "du_lieu": json.dumps(item, ensure_ascii=False), # Toàn bộ JSON trả về từ API
+        "ten_san_pham": item.get("name", ""),
+        "id_product": item.get("id"),
+        "danh_muc": danh_muc
     }
 
-
-def flatten_tiki_detail_item(item: dict) -> dict:
-    category = item.get("primary_category")
-    if isinstance(category, dict):
-        category = category.get("id")
-
-    return {
-        "itemid": item.get("id"),
-        "shopid": item.get("seller_product_id") or 0,
-        "name": item.get("name"),
-        "price_min": item.get("price") or item.get("original_price"),
-        "price_max": item.get("original_price") or item.get("price"),
-        "sold": item.get("quantity_sold", {}).get("value", 0),
-        "rating_star": item.get("rating_average", 0.0),
-        "category_id": category,
-        "raw_content": item.get("short_description", ""),
-        "crawl_time": str(datetime.now()),
-    }
-
-
-def save_scraped_items(df: pd.DataFrame, output_dir: str, replace_table: bool = True):
-    for c in SCRAPED_COLUMNS:
-        if c not in df.columns:
-            df[c] = None
-
-    df = df[SCRAPED_COLUMNS]
-
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
-    db_path = os.path.join(output_dir, "tiki_scraped_data.duckdb")
-
-    con = duckdb.connect(db_path)
-    table_exists = con.execute(
-        "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'scraped_items'"
-    ).fetchone()[0]
-
-    if replace_table or not table_exists:
-        con.execute("DROP TABLE IF EXISTS scraped_items")
-        con.execute(
-            """
-            CREATE TABLE scraped_items (
-                itemid BIGINT,
-                shopid BIGINT,
-                name VARCHAR,
-                price_min BIGINT,
-                price_max BIGINT,
-                sold INT,
-                rating_star DOUBLE,
-                category_id BIGINT,
-                raw_content VARCHAR,
-                crawl_time VARCHAR
-            )
-            """
-        )
-        final_df = df
-    else:
-        old_df = con.execute("SELECT * FROM scraped_items").fetchdf()
-        final_df = pd.concat([old_df, df], ignore_index=True)
-        final_df = final_df.drop_duplicates(subset=["itemid"], keep="last")
-        con.execute("DROP TABLE IF EXISTS scraped_items")
-        con.execute(
-            """
-            CREATE TABLE scraped_items (
-                itemid BIGINT,
-                shopid BIGINT,
-                name VARCHAR,
-                price_min BIGINT,
-                price_max BIGINT,
-                sold INT,
-                rating_star DOUBLE,
-                category_id BIGINT,
-                raw_content VARCHAR,
-                crawl_time VARCHAR
-            )
-            """
-        )
-
-    con.append("scraped_items", final_df)
-    con.close()
-    return db_path
-
-def scrape_tiki(keyword: str, max_pages: int, output_dir: str):
-    print(f"[*] Bắt đầu cào dữ liệu từ Tiki cho từ khóa: '{keyword}'")
+def scrape_tiki(keyword: str, max_pages: int, output_dir: str, danh_muc: str = ""):
+    print(f"[*] Bắt đầu cào DATA THÔ TOÀN BỘ từ Tiki cho từ khóa: '{keyword}'")
     
     all_items = []
     limit = 50 # Tiki khuyến nghị 40-50
@@ -176,9 +74,10 @@ def scrape_tiki(keyword: str, max_pages: int, output_dir: str):
             
         for it in items:
             try:
-                row = flatten_tiki_item(it)
+                row = flatten_tiki_item(it, danh_muc)
                 all_items.append(row)
             except Exception as e:
+                print(f"[!] Lỗi phân tích item: {e}")
                 pass
         
         if len(items) < limit:
@@ -193,12 +92,49 @@ def scrape_tiki(keyword: str, max_pages: int, output_dir: str):
     # Lưu dữ liệu ra Dataframe
     df = pd.DataFrame(all_items)
     
-    # Loại bỏ dữ liệu trùng lặp
-    df = df.drop_duplicates(subset=['itemid'])
+    # Loại bỏ dữ liệu trùng lặp theo id_product
+    df = df.drop_duplicates(subset=['id_product'])
     
-    db_path = save_scraped_items(df, output_dir, replace_table=False)
+    # Sắp xếp đúng thứ tự cột migration
+    cols = ["thoi_diem", "nen_tang", "du_lieu", "ten_san_pham", "id_product", "danh_muc"]
+    df = df[cols]
     
-    print(f"[*] Đã thu thập {len(df)} sản phẩm từ TIKI. Lưu vào DuckDB: {db_path} (Bảng: scraped_items)")
+    # Đảm bảo Project Folder Data tồn tại
+    Path(output_dir).mkdir(parents=True, exist_ok=True)
+    
+    db_path = os.path.join(output_dir, "tiki_scraped_data_raw.duckdb")
+    
+    # Kết nối DuckDB và Insert thẳng vào Table (không create / drop nữa)
+    try:
+        con = duckdb.connect(db_path)
+        
+        # Lọc bỏ id_product đã cào trong vòng 1 tiếng qua (tránh trùng trong cùng 1 chu kỳ)
+        # Nếu record > 1 tiếng rồi thì cho cào lại bình thường (fresh data)
+        recent_ids = set(
+            row[0] for row in con.execute("""
+                SELECT id_product 
+                FROM scraped_raw_items_v2 
+                WHERE id_product IS NOT NULL
+                  AND TRY_CAST(thoi_diem AS TIMESTAMP) >= NOW() - INTERVAL '1 hour'
+            """).fetchall()
+        )
+        df = df[~df["id_product"].isin(recent_ids)]
+        
+        if df.empty:
+            print(f"[*] Không có sản phẩm mới (toàn bộ đã cào trong 1h qua). Bỏ qua.")
+            con.close()
+            return
+        
+        # Sẽ báo lỗi nếu bảng chưa tồn tại (chưa chạy migration)
+        con.append("scraped_raw_items_v2", df)
+        con.close()
+        
+        print(f"[*] THÀNH CÔNG: Đã thêm {len(df)} sản phẩm MỚI vào DuckDB: {db_path} (Bảng: scraped_raw_items_v2)")
+    except duckdb.CatalogException:
+        print("[!] LỖI CƠ SỞ DỮ LIỆU: Bảng 'scraped_raw_items_v2' chưa được tạo!")
+        print("[!] Hướng dẫn: Vui lòng chạy Migration trước bằng lệnh: python src/migration/create_raw_table.py")
+    except Exception as e:
+        print(f"[!] LỖI DuckDB: {e}")
     print("[*] Hoàn tất! Team Data có thể sử dụng file này để test clean text.")
 
 
