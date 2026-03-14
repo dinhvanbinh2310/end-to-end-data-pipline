@@ -37,12 +37,14 @@ Nếu dùng nhiều Python (ServBay, Miniconda...):
 > python -m pip install -r requirements.txt
 ```
 
-BigQuery (nếu cần):
+BigQuery sandbox (không cần billing, dùng ADC):
 
 ```
 > pip install google-cloud-bigquery
-> python -m pip install google-cloud-bigquery
+> gcloud auth application-default login
 ```
+
+Cấu hình `.env`: `BQ_PROJECT_ID`, `BQ_DATASET` (project tạo tại console.cloud.google.com/bigquery)
 
 ## Chạy
 

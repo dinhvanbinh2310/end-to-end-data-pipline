@@ -10,7 +10,6 @@ paths:
   rejected: data/rejected
 
 warehouse:
-  type: bigquery
-  project_id: pipline-end-to-end
+  type: bigquery_sandbox
+  project_id: my-sandbox-project
   dataset: shopee_warehouse
-  credentials: config/credentials/bq-credentials.json

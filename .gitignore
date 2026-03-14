@@ -1,6 +1,6 @@
 .env
 config/credentials/*.json
-pipline-end-to-end-927d19e78374.json
+key.json
 *.duckdb
 __pycache__
 .venv
