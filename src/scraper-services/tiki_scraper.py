@@ -6,6 +6,7 @@ import duckdb
 from datetime import datetime
 from pathlib import Path
 import argparse
+from typing import cast
 
 
 SCRAPED_COLUMNS = [
@@ -118,7 +119,9 @@ def scrape_tiki(keyword: str, max_pages: int, output_dir: str, danh_muc: str = "
                   AND TRY_CAST(thoi_diem AS TIMESTAMP) >= NOW() - INTERVAL '1 hour'
             """).fetchall()
         )
-        df = df[~df["id_product"].isin(recent_ids)]
+        id_col = cast(pd.Series, df["id_product"])
+        mask = id_col.isin(list(recent_ids))
+        df = df.loc[~mask]
         
         if df.empty:
             print(f"[*] Không có sản phẩm mới (toàn bộ đã cào trong 1h qua). Bỏ qua.")
@@ -126,7 +129,7 @@ def scrape_tiki(keyword: str, max_pages: int, output_dir: str, danh_muc: str = "
             return
         
         # Sẽ báo lỗi nếu bảng chưa tồn tại (chưa chạy migration)
-        con.append("scraped_raw_items_v2", df)
+        con.append("scraped_raw_items_v2", pd.DataFrame(df))
         con.close()
         
         print(f"[*] THÀNH CÔNG: Đã thêm {len(df)} sản phẩm MỚI vào DuckDB: {db_path} (Bảng: scraped_raw_items_v2)")
