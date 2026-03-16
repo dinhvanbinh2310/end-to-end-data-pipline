@@ -8,6 +8,20 @@ from pathlib import Path
 import argparse
 from typing import cast
 
+
+SCRAPED_COLUMNS = [
+    "itemid",
+    "shopid",
+    "name",
+    "price_min",
+    "price_max",
+    "sold",
+    "rating_star",
+    "category_id",
+    "raw_content",
+    "crawl_time",
+]
+
 def fetch_tiki_search_items(keyword: str, page_number: int, limit: int = 50) -> dict:
     url = "https://tiki.vn/api/v2/products"
     params = {
@@ -125,6 +139,56 @@ def scrape_tiki(keyword: str, max_pages: int, output_dir: str, danh_muc: str = "
     except Exception as e:
         print(f"[!] LỖI DuckDB: {e}")
     print("[*] Hoàn tất! Team Data có thể sử dụng file này để test clean text.")
+
+
+def refresh_existing_tiki_items(output_dir: str, max_items: int | None = None, delay_seconds: float = 0.4):
+    db_path = os.path.join(output_dir, "tiki_scraped_data.duckdb")
+    if not os.path.exists(db_path):
+        print(f"[!] Chưa tìm thấy DB tại: {db_path}")
+        return False
+
+    con = duckdb.connect(db_path)
+    try:
+        exists = con.execute(
+            "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'scraped_items'"
+        ).fetchone()[0]
+        if not exists:
+            print("[!] Chưa có bảng scraped_items để refresh.")
+            return False
+
+        query = "SELECT DISTINCT itemid FROM scraped_items WHERE itemid IS NOT NULL"
+        if max_items and max_items > 0:
+            query += f" LIMIT {int(max_items)}"
+        rows = con.execute(query).fetchall()
+    finally:
+        con.close()
+
+    item_ids = [int(r[0]) for r in rows if r and r[0] is not None]
+    if not item_ids:
+        print("[!] Không có item_id nào trong scraped_items để refresh.")
+        return False
+
+    print(f"[*] Refresh dữ liệu cho {len(item_ids)} sản phẩm hiện có...")
+    refreshed = []
+
+    for idx, item_id in enumerate(item_ids, start=1):
+        print(f"[-] ({idx}/{len(item_ids)}) Item {item_id}")
+        payload = fetch_tiki_product_detail(item_id)
+        item = payload.get("data") or payload
+        if not isinstance(item, dict) or not item.get("id"):
+            continue
+
+        refreshed.append(flatten_tiki_detail_item(item))
+        time.sleep(delay_seconds)
+
+    if not refreshed:
+        print("[!] Không lấy được dữ liệu mới, giữ nguyên bảng cũ.")
+        return False
+
+    df = pd.DataFrame(refreshed).drop_duplicates(subset=["itemid"])
+    db_path = save_scraped_items(df, output_dir, replace_table=True)
+    print(f"[*] Đã refresh {len(df)} sản phẩm vào: {db_path}")
+    return True
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Tool cào dữ liệu văn bản từ Tiki cho team data.")

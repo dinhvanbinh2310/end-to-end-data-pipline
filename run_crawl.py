@@ -1,11 +1,11 @@
 import sys
 from pathlib import Path
 import time
-import schedule
+import argparse
 
 sys.path.insert(0, str(Path(__file__).parent / "src" / "scraper-services"))
 
-from tiki_scraper import scrape_tiki
+from tiki_scraper import scrape_tiki, refresh_existing_tiki_items
 
 CATEGORIES = {
     "Áo":           ["áo thun nam", "áo sơ mi nam", "áo khoác nữ"],
@@ -35,16 +35,36 @@ def job():
             except Exception as e:
                 print(f"[!] Lỗi khi cào '{kw}': {e}")
             
-    print(f"\n[{time.strftime('%Y-%m-%d %H:%M:%S')}] HOÀN THÀNH TOÀN BỘ CHU KỲ. Đang ngủ chờ 1 tiếng nữa...\n")
+    print(f"\n[{time.strftime('%Y-%m-%d %H:%M:%S')}] HOÀN THÀNH TOÀN BỘ CHU KỲ.\n")
+
+
+def parse_args():
+    parser = argparse.ArgumentParser(description="Chạy crawler định kỳ 24/24.")
+    parser.add_argument(
+        "--mode",
+        choices=["existing", "keyword"],
+        default="existing",
+        help="existing: chỉ refresh item hiện có trong DB, keyword: cào lại theo danh sách từ khóa",
+    )
+    parser.add_argument("--pages", type=int, default=5, help="Số trang khi chạy mode keyword")
+    parser.add_argument("--demo", action="store_true", help="Mode demo: pages=2")
+    parser.add_argument("--once", action="store_true", help="Chỉ chạy 1 chu kỳ rồi thoát")
+    parser.add_argument("--interval-hours", type=float, default=1.0, help="Khoảng thời gian giữa các chu kỳ")
+    parser.add_argument("--max-items", type=int, default=None, help="Giới hạn số item refresh trong mode existing")
+    return parser.parse_args()
+
 
 if __name__ == "__main__":
-    # Chạy lần đầu tiên ngay lập tức khi mở script
-    job()
-    
-    # Lên lịch chạy định kỳ mỗi 1 giờ
-    schedule.every(1).hours.do(job)
-    
-    # Vòng lặp vô hạn giữ cho script hoạt động để kiểm tra lịch
+    args = parse_args()
+    pages = 2 if args.demo else args.pages
+    output_dir = str(Path(__file__).parent / "data")
+
+    run_cycle(mode=args.mode, pages=pages, output_dir=output_dir, max_items=args.max_items)
+    if args.once:
+        raise SystemExit(0)
+
+    interval_seconds = max(60, int(args.interval_hours * 3600))
     while True:
-        schedule.run_pending()
-        time.sleep(1)
+        print(f"[*] Chờ {args.interval_hours} giờ trước chu kỳ tiếp theo...")
+        time.sleep(interval_seconds)
+        run_cycle(mode=args.mode, pages=pages, output_dir=output_dir, max_items=args.max_items)
