@@ -129,3 +129,52 @@ Các tab chính:
 - Staging: xem bảng `products`, `models`, `attributes`, `shops`.
 - Mart: xem `products_full.csv`, lọc theo category/shop và tìm kiếm theo thuộc tính bằng dropdown.
 - DuckDB: xem bảng trong `data/tiki_scraped_data.duckdb`.
+
+## Deploy khuyến nghị (Streamlit + Scheduler)
+
+Mô hình khuyến nghị:
+
+1. Streamlit Community Cloud: chạy giao diện `streamlit_app.py`.
+2. GitHub Actions: chạy crawler nền theo lịch, độc lập UI.
+
+### 1) Cấu hình crawler nền
+
+File: `config/auto_crawl.yaml`
+
+- `enabled`: bật/tắt job
+- `interval_minutes`: mốc chạy (`5, 10, 20, 30, 60`)
+- `quantity`: số sản phẩm mỗi cặp
+- `pairs`: danh sách từng cặp `danh_muc` và `tu_khoa`
+
+Ví dụ:
+
+```yaml
+enabled: true
+interval_minutes: 5
+quantity: 10
+output_dir: data
+pairs:
+    - danh_muc: dien_thoai
+        tu_khoa: iphone
+    - danh_muc: laptop
+        tu_khoa: macbook
+```
+
+### 2) Chạy test local scheduler
+
+```bash
+python run_scheduled_crawl.py --config config/auto_crawl.yaml --timezone Asia/Ho_Chi_Minh --force-run
+```
+
+### 3) GitHub Actions workflow
+
+Workflow: `.github/workflows/crawl-scheduler.yml`
+
+- Tự chạy mỗi 5 phút (`cron: */5 * * * *`)
+- Có thể chạy tay bằng `workflow_dispatch`
+- Sau mỗi lần crawl, workflow sẽ commit file `data/tiki_scraped_data_raw.duckdb` về repo để giữ dữ liệu ổn định giữa các lần chạy.
+
+Lưu ý quan trọng:
+
+- GitHub Actions có mốc nhỏ nhất là 5 phút cho cron.
+- Vì vậy, mốc nhỏ nhất khuyến nghị trong config là 5 phút.

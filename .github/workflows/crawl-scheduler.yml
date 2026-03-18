@@ -1,0 +1,69 @@
+name: Crawl Scheduler
+
+permissions:
+  contents: write
+
+concurrency:
+  group: crawl-scheduler
+  cancel-in-progress: false
+
+on:
+  schedule:
+    # GitHub Actions chi ho tro toi thieu moi 5 phut
+    - cron: "*/5 * * * *"
+  workflow_dispatch:
+
+jobs:
+  crawl:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run scheduled crawl
+        env:
+          TZ: Asia/Ho_Chi_Minh
+        run: |
+          python run_scheduled_crawl.py --config config/auto_crawl.yaml --timezone Asia/Ho_Chi_Minh
+
+      - name: Commit updated DuckDB
+        run: |
+          if [ ! -f data/tiki_scraped_data_raw.duckdb ]; then
+            echo "No DB file found, skipping commit."
+            exit 0
+          fi
+
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add data/tiki_scraped_data_raw.duckdb
+
+          if git diff --cached --quiet; then
+            echo "No DB changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: update crawl duckdb [skip ci]"
+          git pull --rebase origin "${GITHUB_REF_NAME}"
+          git push origin HEAD:"${GITHUB_REF_NAME}"
+
+      # Neu ban muon luu DB ve artifacts moi lan chay, bo comment block duoi
+      # - name: Upload DB artifact
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: tiki-db-${{ github.run_id }}
+      #     path: data/tiki_scraped_data_raw.duckdb
