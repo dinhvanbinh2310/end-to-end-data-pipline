@@ -228,8 +228,7 @@ def render_crawl_tab() -> None:
             st.cache_data.clear()
 
     st.markdown("---")
-    st.markdown("### Tự động cào theo giờ (canh đúng phút 00)")
-    st.caption("Bật chế độ này và giữ trang đang mở để hệ thống tự chạy vào đầu mỗi giờ.")
+    st.markdown("### Tự động cào theo lịch")
 
     auto_enabled = st.toggle("Bật tự động cào", key="auto_crawl_enabled")
     auto_quantity = st.selectbox("Số lượng mỗi từ khóa", [10, 20, 30], index=0, key="auto_crawl_quantity")
@@ -330,8 +329,46 @@ def render_crawl_tab() -> None:
     remaining_minutes = int(remaining.total_seconds() // 60)
     remaining_seconds = int(remaining.total_seconds() % 60)
     interval_label = "1 giờ" if auto_crawl_interval_min == 60 else f"{auto_crawl_interval_min} phút"
-    st.caption(
-        f"Mốc cào hiện tại: mỗi {interval_label}. Lần cào tiếp theo dự kiến lúc {next_run.strftime('%H:%M:%S')} (còn {remaining_minutes:02d}:{remaining_seconds:02d})."
+    next_run_ts_ms = int(next_run.timestamp() * 1000)
+    countdown_id = f"auto-crawl-countdown-{next_run.strftime('%Y%m%d%H%M%S')}"
+    components.html(
+        f"""
+        <div id=\"{countdown_id}\" style=\"font-size: 0.95rem; color: #F5F7FA;\">
+            Mốc cào hiện tại: mỗi {interval_label}. Lần cào tiếp theo dự kiến lúc {next_run.strftime('%H:%M:%S')} (còn {remaining_minutes:02d}:{remaining_seconds:02d}).
+        </div>
+        <script>
+            (function() {{
+                let target = {next_run_ts_ms};
+                const intervalMs = {int(auto_crawl_interval_min)} * 60 * 1000;
+                const el = document.getElementById("{countdown_id}");
+                if (!el) return;
+
+                function pad(n) {{ return String(n).padStart(2, "0"); }}
+
+                function formatTime(ts) {{
+                    const d = new Date(ts);
+                    return pad(d.getHours()) + ":" + pad(d.getMinutes()) + ":" + pad(d.getSeconds());
+                }}
+
+                function tick() {{
+                    const now = Date.now();
+                    while (target <= now) {{
+                        target += intervalMs;
+                    }}
+
+                    const diff = Math.floor((target - now) / 1000);
+
+                    const minutes = Math.floor(diff / 60);
+                    const seconds = diff % 60;
+                    el.textContent = "Mốc cào hiện tại: mỗi {interval_label}. Lần cào tiếp theo dự kiến lúc " + formatTime(target) + " (còn " + pad(minutes) + ":" + pad(seconds) + ").";
+                }}
+
+                tick();
+                setInterval(tick, 1000);
+            }})();
+        </script>
+        """,
+        height=32,
     )
 
     if auto_enabled:
