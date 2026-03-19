@@ -104,6 +104,22 @@ python run_crawl.py --mode existing --once
 python run_crawl.py --mode keyword --interval-hours 1
 ```
 
+## Sync DuckDB len BigQuery
+
+Dong bo du lieu tu `data/tiki_scraped_data_raw.duckdb` len BigQuery:
+
+```
+python run_sync.py
+```
+
+Hoac:
+
+```
+python -m src.data_warehouse.sync_duckdb_to_bq
+```
+
+Can cau hinh `.env`: `GOOGLE_APPLICATION_CREDENTIALS`, `BQ_PROJECT_ID`, `BQ_DATASET`.
+
 ## Xem dữ liệu bằng Streamlit
 
 1. Cài dependencies:
@@ -128,4 +144,36 @@ Các tab chính:
 - Raw: xem file JSON thô và JSON đã clean.
 - Staging: xem bảng `products`, `models`, `attributes`, `shops`.
 - Mart: xem `products_full.csv`, lọc theo category/shop và tìm kiếm theo thuộc tính bằng dropdown.
-- DuckDB: xem bảng trong `data/tiki_scraped_data.duckdb`.
+- DuckDB: xem bảng trong `data/tiki_scraped_data_raw.duckdb`.
+
+## Sync DuckDB len BigQuery (Cloud)
+
+Dong bo du lieu tu DuckDB local len BigQuery:
+
+```
+python run_sync.py
+```
+
+Hoac:
+
+```
+python -m src.data_warehouse.sync_duckdb_to_bq
+```
+
+Can cau hinh `.env`: `GOOGLE_APPLICATION_CREDENTIALS`, `BQ_PROJECT_ID`, `BQ_DATASET`.
+
+## Sync DuckDB len BigQuery
+
+Dong bo du lieu raw tu `data/tiki_scraped_data_raw.duckdb` len BigQuery:
+
+```
+python run_sync.py
+```
+
+Hoac:
+
+```
+python -m src.data_warehouse.sync_duckdb_to_bq
+```
+
+Can cau hinh `.env`: `GOOGLE_APPLICATION_CREDENTIALS`, `BQ_PROJECT_ID`, `BQ_DATASET`.

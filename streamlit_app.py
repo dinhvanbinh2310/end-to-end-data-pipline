@@ -340,10 +340,10 @@ def render_mart_tab(mart_df: pd.DataFrame, attributes_df: pd.DataFrame) -> None:
 
 def render_duckdb_tab() -> None:
     st.subheader("DuckDB")
-    db_path = BASE_DIR / "data" / "tiki_scraped_data.duckdb"
+    db_path = BASE_DIR / "data" / "tiki_scraped_data_raw.duckdb"
 
     if not db_path.exists():
-        st.info("Không tìm thấy data/tiki_scraped_data.duckdb")
+        st.info("Không tìm thấy data/tiki_scraped_data_raw.duckdb")
         return
 
     st.caption(f"Database: {db_path}")

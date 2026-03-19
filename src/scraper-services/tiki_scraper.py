@@ -141,8 +141,23 @@ def scrape_tiki(keyword: str, max_pages: int, output_dir: str, danh_muc: str = "
     print("[*] Hoàn tất! Team Data có thể sử dụng file này để test clean text.")
 
 
+def fetch_tiki_product_detail(product_id: int) -> dict:
+    url = f"https://tiki.vn/api/v2/products/{product_id}"
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
+        "Accept": "application/json, text/plain, */*",
+    }
+    try:
+        r = requests.get(url, headers=headers, timeout=15)
+        if r.status_code == 200:
+            return r.json()
+    except Exception:
+        pass
+    return {}
+
+
 def refresh_existing_tiki_items(output_dir: str, max_items: int | None = None, delay_seconds: float = 0.4):
-    db_path = os.path.join(output_dir, "tiki_scraped_data.duckdb")
+    db_path = os.path.join(output_dir, "tiki_scraped_data_raw.duckdb")
     if not os.path.exists(db_path):
         print(f"[!] Chưa tìm thấy DB tại: {db_path}")
         return False
@@ -150,13 +165,13 @@ def refresh_existing_tiki_items(output_dir: str, max_items: int | None = None, d
     con = duckdb.connect(db_path)
     try:
         exists = con.execute(
-            "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'scraped_items'"
+            "SELECT COUNT(*) FROM information_schema.tables WHERE table_name = 'scraped_raw_items_v2'"
         ).fetchone()[0]
         if not exists:
-            print("[!] Chưa có bảng scraped_items để refresh.")
+            print("[!] Chưa có bảng scraped_raw_items_v2. Chạy migration: python src/migration/create_raw_table.py")
             return False
 
-        query = "SELECT DISTINCT itemid FROM scraped_items WHERE itemid IS NOT NULL"
+        query = "SELECT DISTINCT id_product FROM scraped_raw_items_v2 WHERE id_product IS NOT NULL"
         if max_items and max_items > 0:
             query += f" LIMIT {int(max_items)}"
         rows = con.execute(query).fetchall()
@@ -165,30 +180,38 @@ def refresh_existing_tiki_items(output_dir: str, max_items: int | None = None, d
 
     item_ids = [int(r[0]) for r in rows if r and r[0] is not None]
     if not item_ids:
-        print("[!] Không có item_id nào trong scraped_items để refresh.")
+        print("[!] Không có id_product trong scraped_raw_items_v2 để refresh.")
         return False
 
-    print(f"[*] Refresh dữ liệu cho {len(item_ids)} sản phẩm hiện có...")
+    print(f"[*] Refresh dữ liệu cho {len(item_ids)} sản phẩm...")
     refreshed = []
 
-    for idx, item_id in enumerate(item_ids, start=1):
-        print(f"[-] ({idx}/{len(item_ids)}) Item {item_id}")
-        payload = fetch_tiki_product_detail(item_id)
-        item = payload.get("data") or payload
-        if not isinstance(item, dict) or not item.get("id"):
+    for idx, pid in enumerate(item_ids, start=1):
+        print(f"[-] ({idx}/{len(item_ids)}) id={pid}")
+        payload = fetch_tiki_product_detail(pid)
+        item = payload.get("data") if isinstance(payload, dict) else payload
+        if not isinstance(item, dict) or item.get("id") is None:
             continue
-
-        refreshed.append(flatten_tiki_detail_item(item))
+        refreshed.append(flatten_tiki_item(item, ""))
         time.sleep(delay_seconds)
 
     if not refreshed:
-        print("[!] Không lấy được dữ liệu mới, giữ nguyên bảng cũ.")
+        print("[!] Không lấy được dữ liệu mới.")
         return False
 
-    df = pd.DataFrame(refreshed).drop_duplicates(subset=["itemid"])
-    db_path = save_scraped_items(df, output_dir, replace_table=True)
-    print(f"[*] Đã refresh {len(df)} sản phẩm vào: {db_path}")
-    return True
+    df = pd.DataFrame(refreshed).drop_duplicates(subset=["id_product"])
+    cols = ["thoi_diem", "nen_tang", "du_lieu", "ten_san_pham", "id_product", "danh_muc"]
+    df = df[cols]
+
+    try:
+        con = duckdb.connect(db_path)
+        con.append("scraped_raw_items_v2", pd.DataFrame(df))
+        con.close()
+        print(f"[*] Đã refresh {len(df)} sản phẩm vào: {db_path}")
+        return True
+    except Exception as e:
+        print(f"[!] Lỗi ghi DuckDB: {e}")
+        return False
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Tool cào dữ liệu văn bản từ Tiki cho team data.")
