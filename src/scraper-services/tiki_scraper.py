@@ -128,9 +128,34 @@ def extract_sold(item: dict[str, Any]) -> int | None:
     return None
 
 
-def flatten_tiki_item(item: dict[str, Any], danh_muc: str = "", tu_khoa: str = "", kieu_cao: str = "new") -> dict[str, Any]:
+def _volatility_score(item: dict[str, Any]) -> tuple[int, float, int]:
+    """Higher score means product is a better candidate for change tracking."""
+    sold = extract_sold(item)
+    rating = item.get("rating_average")
+    price = item.get("price") or item.get("list_price") or item.get("original_price") or 0
+
+    sold_value = int(sold) if isinstance(sold, (int, float)) else 0
+    rating_value = float(rating) if isinstance(rating, (int, float)) else 0.0
+    price_value = int(price) if isinstance(price, (int, float)) else 0
+    return (sold_value, rating_value, price_value)
+
+
+def flatten_tiki_item(
+    item: dict[str, Any],
+    danh_muc: str = "",
+    tu_khoa: str = "",
+    kieu_cao: str = "new",
+    snapshot_time: datetime | str | None = None,
+) -> dict[str, Any]:
+    if isinstance(snapshot_time, datetime):
+        thoi_diem = snapshot_time.strftime("%Y-%m-%d %H:%M:%S")
+    elif isinstance(snapshot_time, str) and snapshot_time.strip():
+        thoi_diem = snapshot_time.strip()
+    else:
+        thoi_diem = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
     return {
-        "thoi_diem": str(datetime.now()),
+        "thoi_diem": thoi_diem,
         "nen_tang": "tiki",
         "du_lieu": json.dumps(item, ensure_ascii=False),
         "ten_san_pham": item.get("name", ""),
@@ -197,9 +222,18 @@ def append_rows_to_raw_db(rows: list[dict[str, Any]], output_dir: str, dedupe_ho
             con.close()
 
 
-def scrape_tiki(keyword: str, max_pages: int, output_dir: str, danh_muc: str = "", page_limit: int = 50, dedupe_hours: int = 0):
+def scrape_tiki(
+    keyword: str,
+    max_pages: int,
+    output_dir: str,
+    danh_muc: str = "",
+    page_limit: int = 50,
+    dedupe_hours: int = 0,
+    snapshot_time: datetime | str | None = None,
+):
     print(f"[*] Bắt đầu cào dữ liệu từ Tiki cho từ khóa: '{keyword}'")
     all_items: list[dict[str, Any]] = []
+    run_snapshot_time = snapshot_time or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     for page in range(max_pages):
         print(f"[-] Đang cào trang {page + 1}...")
@@ -212,7 +246,15 @@ def scrape_tiki(keyword: str, max_pages: int, output_dir: str, danh_muc: str = "
 
         for item in items:
             if isinstance(item, dict):
-                all_items.append(flatten_tiki_item(item, danh_muc=danh_muc, tu_khoa=keyword, kieu_cao="new"))
+                all_items.append(
+                    flatten_tiki_item(
+                        item,
+                        danh_muc=danh_muc,
+                        tu_khoa=keyword,
+                        kieu_cao="new",
+                        snapshot_time=run_snapshot_time,
+                    )
+                )
 
         if len(items) < page_limit:
             break
@@ -227,7 +269,12 @@ def scrape_tiki(keyword: str, max_pages: int, output_dir: str, danh_muc: str = "
     print(f"[*] THÀNH CÔNG: Đã thêm {inserted_count} record mới vào {db_path}")
 
 
-def refresh_existing_tiki_items(output_dir: str, max_items: int | None = None, delay_seconds: float = 0.3) -> bool:
+def refresh_existing_tiki_items(
+    output_dir: str,
+    max_items: int | None = None,
+    delay_seconds: float = 0.3,
+    snapshot_time: datetime | str | None = None,
+) -> bool:
     db_path = build_db_path(output_dir)
     if not os.path.exists(db_path):
         print(f"[!] Chưa tìm thấy DB tại: {db_path}")
@@ -252,12 +299,15 @@ def refresh_existing_tiki_items(output_dir: str, max_items: int | None = None, d
 
     print(f"[*] Sync giá cho {len(item_ids)} sản phẩm cũ...")
     refreshed: list[dict[str, Any]] = []
+    run_snapshot_time = snapshot_time or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     for idx, item_id in enumerate(item_ids, start=1):
         print(f"[-] ({idx}/{len(item_ids)}) Product {item_id}")
         payload = fetch_tiki_product_detail(item_id)
         item = payload.get("data") or payload
         if isinstance(item, dict) and item.get("id"):
-            refreshed.append(flatten_tiki_item(item, danh_muc="sync_existing", kieu_cao="sync"))
+            refreshed.append(
+                flatten_tiki_item(item, danh_muc="sync_existing", kieu_cao="sync", snapshot_time=run_snapshot_time)
+            )
         time.sleep(delay_seconds)
 
     inserted_count, db_path = append_rows_to_raw_db(refreshed, output_dir, dedupe_hours=0)
@@ -265,27 +315,50 @@ def refresh_existing_tiki_items(output_dir: str, max_items: int | None = None, d
     return inserted_count > 0
 
 
-def crawl_new_products(keyword: str, quantity: int, output_dir: str, danh_muc: str = "giao_dien") -> dict[str, Any]:
+def crawl_new_products(
+    keyword: str,
+    quantity: int,
+    output_dir: str,
+    danh_muc: str = "giao_dien",
+    snapshot_time: datetime | str | None = None,
+) -> dict[str, Any]:
     quantity = int(quantity)
-    data = fetch_tiki_search_items(keyword, page_number=0, limit=quantity)
-    items = (data.get("data") or [])[:quantity]
+
+    # Pull a wider candidate pool, then keep the most "volatile" products.
+    candidate_limit = min(max(quantity * 10, 50), 100)
+    data = fetch_tiki_search_items(keyword, page_number=0, limit=candidate_limit)
+    items = [item for item in (data.get("data") or []) if isinstance(item, dict)]
+    items = sorted(items, key=_volatility_score, reverse=True)[:quantity]
+
+    run_snapshot_time = snapshot_time or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     rows = [
-        flatten_tiki_item(item, danh_muc=danh_muc, tu_khoa=keyword, kieu_cao="new")
+        flatten_tiki_item(item, danh_muc=danh_muc, tu_khoa=keyword, kieu_cao="new", snapshot_time=run_snapshot_time)
         for item in items
-        if isinstance(item, dict)
     ]
     inserted_count, db_path = append_rows_to_raw_db(rows, output_dir, dedupe_hours=0)
     return {
         "inserted": inserted_count,
         "requested": quantity,
         "fetched": len(rows),
+        "candidate_pool": len(data.get("data") or []),
+        "selection_strategy": "top_sold_rating_price",
         "db_path": db_path,
     }
 
 
-def sync_prices_from_existing(output_dir: str, max_items: int, delay_seconds: float = 0.3) -> dict[str, Any]:
-    ok = refresh_existing_tiki_items(output_dir=output_dir, max_items=max_items, delay_seconds=delay_seconds)
+def sync_prices_from_existing(
+    output_dir: str,
+    max_items: int,
+    delay_seconds: float = 0.3,
+    snapshot_time: datetime | str | None = None,
+) -> dict[str, Any]:
+    ok = refresh_existing_tiki_items(
+        output_dir=output_dir,
+        max_items=max_items,
+        delay_seconds=delay_seconds,
+        snapshot_time=snapshot_time,
+    )
     return {
         "success": ok,
         "max_items": max_items,

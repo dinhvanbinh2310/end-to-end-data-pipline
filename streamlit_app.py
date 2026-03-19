@@ -7,6 +7,7 @@ import duckdb
 import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
+import altair as alt
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
@@ -174,6 +175,24 @@ def _safe_float(value: object, default: float = 0.0) -> float:
     return float(num)
 
 
+MANUAL_VOLATILE_PAIRS: list[tuple[str, str]] = [
+    ("dien_thoai", "iphone"),
+    ("laptop", "macbook"),
+    ("giay", "giay sneaker"),
+    ("ao", "ao thun nam"),
+    ("quan", "quan jean nam"),
+    ("my_pham", "serum duong da"),
+    ("dong_ho", "dong ho nam"),
+    ("tui_xach", "tui xach nu"),
+    ("phu_kien", "tai nghe bluetooth"),
+    ("do_gia_dung", "noi chien khong dau"),
+]
+
+MANUAL_DEFAULT_KEYWORDS: dict[str, str] = {danh_muc: tu_khoa for danh_muc, tu_khoa in MANUAL_VOLATILE_PAIRS}
+MANUAL_VOLATILE_CATEGORIES: list[str] = [danh_muc for danh_muc, _ in MANUAL_VOLATILE_PAIRS]
+DASHBOARD_TARGET_CATEGORIES: list[str] = MANUAL_VOLATILE_CATEGORIES.copy()
+
+
 def render_crawl_tab() -> None:
     st.subheader("Cào Dữ Liệu Từ Giao Diện")
 
@@ -183,28 +202,69 @@ def render_crawl_tab() -> None:
 
     left, right = st.columns(2)
 
+    if "manual_categories_multi" not in st.session_state:
+        st.session_state["manual_categories_multi"] = MANUAL_VOLATILE_CATEGORIES.copy()
+
     with left:
+        st.markdown("### Cào mới theo từ khóa")
+        selected_manual_categories = cast(
+            list[str],
+            st.multiselect(
+                "Danh mục (chọn nhiều để cào 1 lần)",
+                MANUAL_VOLATILE_CATEGORIES,
+                default=st.session_state["manual_categories_multi"],
+                key="manual_categories_multi",
+            ),
+        )
+
+        if selected_manual_categories:
+            preview_pairs = [f"{cat} | {MANUAL_DEFAULT_KEYWORDS.get(cat, '')}" for cat in selected_manual_categories]
+            st.caption("Sẽ cào các cặp: " + "; ".join(preview_pairs))
+
         with st.form("new_crawl_form"):
-            st.markdown("### Cào mới theo từ khóa")
-            keyword = st.text_input("Từ khóa", value="điện thoại iphone")
-            danh_muc = st.text_input("Danh mục", value="giao_dien")
-            quantity = st.selectbox("Số lượng sản phẩm", [10, 20, 30], index=0)
+            st.caption("Từ khóa sẽ dùng theo bộ gợi ý biến động cao tương ứng từng danh mục.")
+            quantity = st.selectbox("Số lượng sản phẩm mỗi danh mục", [1, 3, 5, 10], index=0)
             submit_new = st.form_submit_button("Cào mới")
 
         if submit_new:
-            if not keyword.strip():
-                st.warning("Nhập từ khóa trước khi cào.")
+            if not selected_manual_categories:
+                st.warning("Chọn ít nhất 1 danh mục trước khi cào.")
             else:
+                run_snapshot_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                total_inserted = 0
+                total_requested = 0
+                run_rows: list[dict[str, object]] = []
                 with st.spinner("Đang cào dữ liệu mới..."):
-                    result = crawl_new_products(
-                        keyword=keyword.strip(),
-                        quantity=int(quantity),
-                        output_dir=str(DATA_DIR),
-                        danh_muc=danh_muc.strip(),
-                    )
+                    for category in selected_manual_categories:
+                        keyword = MANUAL_DEFAULT_KEYWORDS.get(category, "").strip()
+                        if not keyword:
+                            continue
+
+                        result = crawl_new_products(
+                            keyword=keyword,
+                            quantity=int(quantity),
+                            output_dir=str(DATA_DIR),
+                            danh_muc=category,
+                            snapshot_time=run_snapshot_time,
+                        )
+                        inserted = int(result.get("inserted", 0))
+                        requested = int(result.get("requested", quantity))
+                        total_inserted += inserted
+                        total_requested += requested
+                        run_rows.append(
+                            {
+                                "danh_muc": category,
+                                "tu_khoa": keyword,
+                                "inserted": inserted,
+                                "requested": requested,
+                            }
+                        )
+
                 st.success(
-                    f"Đã thêm {result['inserted']}/{result['requested']} bản ghi mới vào DB."
+                    f"Đã thêm {total_inserted}/{total_requested} bản ghi mới vào DB. Mốc thời gian batch: {run_snapshot_time}."
                 )
+                if run_rows:
+                    st.dataframe(pd.DataFrame(run_rows), width="stretch")
                 st.cache_data.clear()
 
     with right:
@@ -215,14 +275,18 @@ def render_crawl_tab() -> None:
             submit_sync = st.form_submit_button("Sync giá")
 
         if submit_sync:
+            sync_snapshot_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             with st.spinner("Đang sync giá sản phẩm cũ..."):
                 result = sync_prices_from_existing(
                     output_dir=str(DATA_DIR),
                     max_items=int(max_items),
                     delay_seconds=float(delay_seconds),
+                    snapshot_time=sync_snapshot_time,
                 )
             if result["success"]:
-                st.success(f"Sync thành công. Đã tạo bản ghi mới trong {result['db_path']}")
+                st.success(
+                    f"Sync thành công. Đã tạo bản ghi mới trong {result['db_path']}. Mốc thời gian batch: {sync_snapshot_time}."
+                )
             else:
                 st.warning("Không có bản ghi mới được tạo trong lần sync này.")
             st.cache_data.clear()
@@ -231,7 +295,7 @@ def render_crawl_tab() -> None:
     st.markdown("### Tự động cào theo lịch")
 
     auto_enabled = st.toggle("Bật tự động cào", key="auto_crawl_enabled")
-    auto_quantity = st.selectbox("Số lượng mỗi từ khóa", [10, 20, 30], index=0, key="auto_crawl_quantity")
+    auto_quantity = st.selectbox("Số lượng mỗi từ khóa", [1, 3, 5, 10], index=0, key="auto_crawl_quantity")
     auto_crawl_interval_min = st.selectbox(
         "Mốc tự động cào",
         [5, 10, 20, 30, 60],
@@ -402,6 +466,7 @@ def render_crawl_tab() -> None:
             else:
                 total_inserted = 0
                 total_requested = 0
+                auto_snapshot_time = now.strftime("%Y-%m-%d %H:%M:%S")
                 with st.spinner("Đang tự động cào dữ liệu đầu giờ..."):
                     for danh_muc, tu_khoa in parsed_targets:
                         result = crawl_new_products(
@@ -409,13 +474,14 @@ def render_crawl_tab() -> None:
                             quantity=int(auto_quantity),
                             output_dir=str(DATA_DIR),
                             danh_muc=danh_muc,
+                            snapshot_time=auto_snapshot_time,
                         )
                         total_inserted += int(result.get("inserted", 0))
                         total_requested += int(result.get("requested", 0))
 
                 st.session_state["auto_crawl_last_slot"] = run_slot_key
                 st.success(
-                    f"Auto crawl {now.strftime('%H:%M')} hoàn tất: {total_inserted}/{total_requested} bản ghi mới."
+                    f"Auto crawl {now.strftime('%H:%M')} hoàn tất: {total_inserted}/{total_requested} bản ghi mới. Mốc batch: {auto_snapshot_time}."
                 )
                 st.cache_data.clear()
         else:
@@ -458,31 +524,8 @@ def render_snapshot_tab() -> None:
 
 
 def render_dashboard_tab() -> None:
-    st.markdown(
-        """
-        <style>
-        .kpi-card {
-            background: linear-gradient(135deg, rgba(34, 197, 94, 0.16), rgba(14, 116, 144, 0.16));
-            border: 1px solid rgba(255, 255, 255, 0.12);
-            border-radius: 12px;
-            padding: 8px 12px;
-            margin-bottom: 8px;
-        }
-        .kpi-label {
-            opacity: 0.85;
-            font-size: 0.85rem;
-        }
-        .kpi-number {
-            font-size: 1.3rem;
-            font-weight: 700;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
-
-    st.subheader("Dashboard Biến Động Sản Phẩm")
-    st.caption("Theo dõi biến động giá, rating, lượt mua theo thời gian")
+    st.subheader("Dashboard Biến Động Theo Danh Mục")
+    st.caption("Thống kê theo 10 danh mục mục tiêu: số sản phẩm, giá trung bình, rating trung bình, lượt mua")
 
     df = load_dashboard_snapshots()
     if df.empty:
@@ -511,130 +554,298 @@ def render_dashboard_tab() -> None:
         st.warning("Không có dữ liệu sau khi lọc.")
         return
 
-    search_name = st.text_input("Tìm tên sản phẩm", value="").strip().lower()
-    if search_name:
-        filtered = filtered[
-            filtered["ten_san_pham"].fillna("").astype(str).str.lower().str.contains(search_name, na=False)
-        ]
-        if filtered.empty:
-            st.warning("Không tìm thấy sản phẩm phù hợp.")
-            return
+    filtered = filtered[filtered["danh_muc"].fillna("").astype(str).str.strip() != ""]
+    filtered = filtered[filtered["danh_muc"].astype(str).isin(DASHBOARD_TARGET_CATEGORIES)]
+    if filtered.empty:
+        st.warning("Không có dữ liệu danh mục sau khi lọc.")
+        return
 
-    product_map = (
+    coverage_rows = []
+    existing_categories = set(filtered["danh_muc"].astype(str).unique().tolist())
+    for cat in DASHBOARD_TARGET_CATEGORIES:
+        coverage_rows.append(
+            {
+                "danh_muc": cat,
+                "co_du_lieu": cat in existing_categories,
+            }
+        )
+    st.markdown("### Trạng thái dữ liệu 10 danh mục")
+    st.dataframe(pd.DataFrame(coverage_rows), width="stretch")
+
+    # Mỗi sản phẩm lấy snapshot mới nhất để thống kê current-state theo danh mục.
+    latest_per_product = (
         filtered.sort_values("thoi_diem")
         .drop_duplicates(subset=["id_product"], keep="last")
-        .loc[:, ["id_product", "ten_san_pham"]]
+        .copy()
     )
-    product_map["label"] = (
-        product_map["id_product"].astype(str)
-        + " | "
-        + product_map["ten_san_pham"].fillna("Không tên").astype(str)
+    latest_per_product["doanh_thu_uoc_tinh"] = (
+        latest_per_product["gia_hien_tai"].fillna(0) * latest_per_product["luot_mua"].fillna(0)
     )
-    product_labels = product_map["label"].tolist()
-    selected_label = cast(str, st.selectbox("Chọn sản phẩm", product_labels))
-    selected_id = int(product_map.loc[product_map["label"] == selected_label, "id_product"].iloc[0])
 
-    product_df = filtered[filtered["id_product"] == selected_id].sort_values("thoi_diem")
-    latest = product_df.iloc[-1]
-    previous = product_df.iloc[-2] if len(product_df) > 1 else None
+    total_products = int(latest_per_product["id_product"].nunique())
+    total_categories = int(latest_per_product["danh_muc"].nunique())
+    avg_price = _safe_float(latest_per_product["gia_hien_tai"].mean(), 0.0)
+    avg_rating = _safe_float(latest_per_product["diem_danh_gia"].mean(), 0.0)
 
-    metric_a, metric_b, metric_c = st.columns(3)
-    latest_price = _safe_int(latest.get("gia_hien_tai"), 0)
-    previous_price = _safe_int(previous.get("gia_hien_tai"), 0) if previous is not None else None
-    latest_rating = _safe_float(latest.get("diem_danh_gia"), 0.0)
-    previous_rating = _safe_float(previous.get("diem_danh_gia"), 0.0) if previous is not None else None
-    latest_sales = _safe_int(latest.get("luot_mua"), 0)
-    previous_sales = _safe_int(previous.get("luot_mua"), 0) if previous is not None else None
+    m1, m2, m3, m4 = st.columns(4)
+    m1.metric("Tổng sản phẩm", f"{total_products:,}")
+    m2.metric("Tổng danh mục", f"{total_categories:,}")
+    m3.metric("Giá trung bình", f"{int(avg_price):,}")
+    m4.metric("Rating trung bình", f"{avg_rating:.2f}")
 
-    with metric_a:
-        delta = None if previous_price is None else (latest_price - previous_price)
-        st.markdown(
-            f'<div class="kpi-card"><div class="kpi-label">Giá hiện tại</div><div class="kpi-number">{latest_price:,}</div></div>',
-            unsafe_allow_html=True,
+    category_summary = (
+        latest_per_product.groupby("danh_muc", as_index=False)
+        .agg(
+            so_san_pham=("id_product", "nunique"),
+            tong_gia=("doanh_thu_uoc_tinh", "sum"),
+            gia_trung_binh=("gia_hien_tai", "mean"),
+            rating_trung_binh=("diem_danh_gia", "mean"),
+            luot_mua_trung_binh=("luot_mua", "mean"),
+            luot_mua_tong=("luot_mua", "sum"),
         )
-        st.metric("Giá hiện tại", f"{latest_price:,}", None if delta is None else f"{int(delta):,}")
-    with metric_b:
-        delta = None if previous_rating is None else (latest_rating - previous_rating)
-        st.markdown(
-            f'<div class="kpi-card"><div class="kpi-label">Điểm đánh giá</div><div class="kpi-number">{latest_rating:.2f}</div></div>',
-            unsafe_allow_html=True,
-        )
-        st.metric("Điểm đánh giá", f"{latest_rating:.2f}", None if delta is None else f"{float(delta):+.2f}")
-    with metric_c:
-        delta = None if previous_sales is None else (latest_sales - previous_sales)
-        st.markdown(
-            f'<div class="kpi-card"><div class="kpi-label">Lượt mua</div><div class="kpi-number">{latest_sales:,}</div></div>',
-            unsafe_allow_html=True,
-        )
-        st.metric("Lượt mua", f"{latest_sales:,}", None if delta is None else f"{int(delta):,}")
-
-    latest_url = str(latest.get("product_url") or "").strip()
-    if latest_url.startswith("http"):
-        st.markdown(f"[Mở trang sản phẩm]({latest_url})")
-
-    metric_choices = st.multiselect(
-        "Chỉ số trên biểu đồ",
-        ["gia_hien_tai", "diem_danh_gia", "luot_mua"],
-        default=["gia_hien_tai", "diem_danh_gia", "luot_mua"],
+        .sort_values("so_san_pham", ascending=False)
     )
-    if metric_choices:
-        plot_df = product_df.set_index("thoi_diem")[metric_choices].copy()
-        rename_map = {
-            "gia_hien_tai": "Giá hiện tại",
-            "diem_danh_gia": "Điểm đánh giá",
-            "luot_mua": "Lượt mua",
-        }
-        plot_df = plot_df.rename(columns=rename_map)
-        st.line_chart(plot_df, height=320)
 
-    lookback_days = st.selectbox("Bảng biến động gần đây", [7, 30, 90], index=1)
+    metric_map = {
+        "Giá": {
+            "summary_col": "tong_gia",
+            "summary_label": "Doanh thu ước tính",
+        },
+        "Điểm đánh giá": {
+            "summary_col": "rating_trung_binh",
+            "summary_label": "Điểm đánh giá trung bình",
+        },
+        "Lượt mua": {
+            "summary_col": "luot_mua_tong",
+            "summary_label": "Tổng bán",
+        },
+    }
+
+    selected_bar_pie_metric = cast(
+        str,
+        st.selectbox(
+            "Tiêu chí cho biểu đồ cột và tròn",
+            ["Giá", "Điểm đánh giá", "Lượt mua"],
+            index=2,
+        ),
+    )
+    bar_pie_col = cast(str, metric_map[selected_bar_pie_metric]["summary_col"])
+    bar_pie_label = cast(str, metric_map[selected_bar_pie_metric]["summary_label"])
+
+    st.markdown("### Biểu đồ chính")
+    chart_col1, chart_col2 = st.columns(2)
+    with chart_col1:
+        st.caption(f"Biểu đồ cột ngang: Top danh mục theo {bar_pie_label.lower()}")
+        bar_data = category_summary.sort_values(bar_pie_col, ascending=False).head(10).copy()
+        bar_data["danh_muc"] = bar_data["danh_muc"].astype(str)
+        horizontal_bar = (
+            alt.Chart(bar_data)
+            .mark_bar()
+            .encode(
+                x=alt.X(f"{bar_pie_col}:Q", title=bar_pie_label),
+                y=alt.Y("danh_muc:N", sort="-x", title="Danh mục"),
+                tooltip=["danh_muc", bar_pie_col, "luot_mua_tong", "tong_gia", "so_san_pham", "gia_trung_binh", "rating_trung_binh"],
+            )
+            .properties(height=320)
+        )
+        st.altair_chart(horizontal_bar, width="stretch")
+
+    with chart_col2:
+        st.caption(f"Biểu đồ tròn: Tỷ trọng danh mục theo {bar_pie_label.lower()}")
+        pie_data = category_summary.copy()
+        pie_data["danh_muc"] = pie_data["danh_muc"].astype(str)
+        pie_chart = (
+            alt.Chart(pie_data)
+            .mark_arc(innerRadius=55)
+            .encode(
+                theta=alt.Theta(f"{bar_pie_col}:Q", title=bar_pie_label),
+                color=alt.Color("danh_muc:N", title="Danh mục"),
+                tooltip=["danh_muc", bar_pie_col, "luot_mua_tong", "tong_gia", "so_san_pham"],
+            )
+            .properties(height=320)
+        )
+        st.altair_chart(pie_chart, width="stretch")
+
+    st.markdown("### Biểu đồ đường: 3 tiêu chí theo thời gian")
+    trend_categories = st.multiselect(
+        "Danh mục hiển thị trên biểu đồ",
+        DASHBOARD_TARGET_CATEGORIES,
+        default=[cat for cat in DASHBOARD_TARGET_CATEGORIES if cat in set(category_summary["danh_muc"].astype(str).tolist())],
+    )
+
+    trend_df = filtered.copy()
+    trend_df["moc_thoi_gian"] = trend_df["thoi_diem"].dt.floor("min")
+    trend_df["doanh_thu_uoc_tinh"] = trend_df["gia_hien_tai"].fillna(0) * trend_df["luot_mua"].fillna(0)
+    if trend_categories:
+        trend_df = trend_df[trend_df["danh_muc"].astype(str).isin(trend_categories)]
+
+    if not trend_df.empty:
+        minute_totals = (
+            trend_df.groupby("moc_thoi_gian", as_index=False)
+            .agg(
+                tong_gia=("doanh_thu_uoc_tinh", "sum"),
+                rating_tb=("diem_danh_gia", "mean"),
+                tong_ban=("luot_mua", "sum"),
+            )
+            .sort_values("moc_thoi_gian")
+        )
+
+        line_base = alt.Chart(minute_totals).encode(
+            x=alt.X(
+                "moc_thoi_gian:T",
+                title="Thời điểm (ngày/tháng/năm giờ:phút)",
+                axis=alt.Axis(format="%d/%m/%Y %H:%M", labelAngle=-28),
+            )
+        )
+
+        line_tong_gia = line_base.mark_line(color="#B22222", strokeWidth=2.5).encode(
+            y=alt.Y(
+                "tong_gia:Q",
+                axis=alt.Axis(title="Doanh thu ước tính", titleColor="#B22222", labelColor="#B22222"),
+            ),
+            tooltip=[
+                alt.Tooltip("moc_thoi_gian:T", title="Thời điểm", format="%d/%m/%Y %H:%M"),
+                alt.Tooltip("tong_gia:Q", title="Doanh thu ước tính", format=",.0f"),
+                alt.Tooltip("tong_ban:Q", title="Tổng bán", format=",.0f"),
+                alt.Tooltip("rating_tb:Q", title="Điểm đánh giá TB", format=".2f"),
+            ],
+        )
+        point_tong_gia = line_base.mark_circle(color="#B22222", size=80, opacity=0.9).encode(
+            y=alt.Y("tong_gia:Q", axis=alt.Axis(title=None, labels=False, ticks=False, grid=False)),
+            tooltip=[
+                alt.Tooltip("moc_thoi_gian:T", title="Thời điểm", format="%d/%m/%Y %H:%M"),
+                alt.Tooltip("tong_gia:Q", title="Doanh thu ước tính", format=",.0f"),
+            ],
+        )
+
+        line_rating = line_base.mark_line(color="#F39C12", strokeDash=[6, 4], strokeWidth=2).encode(
+            y=alt.Y("rating_tb:Q", axis=alt.Axis(title=None, labels=False, ticks=False, grid=False))
+        )
+        point_rating = line_base.mark_circle(color="#F39C12", size=70, opacity=0.9).encode(
+            y=alt.Y("rating_tb:Q", axis=alt.Axis(title=None, labels=False, ticks=False, grid=False)),
+            tooltip=[
+                alt.Tooltip("moc_thoi_gian:T", title="Thời điểm", format="%d/%m/%Y %H:%M"),
+                alt.Tooltip("rating_tb:Q", title="Điểm đánh giá TB", format=".2f"),
+            ],
+        )
+
+        line_tong_ban = line_base.mark_line(color="#2E8B57", strokeWidth=2.5).encode(
+            y=alt.Y(
+                "tong_ban:Q",
+                axis=alt.Axis(
+                    title="Tổng bán",
+                    titleColor="#2E8B57",
+                    labelColor="#2E8B57",
+                    orient="right",
+                ),
+            )
+        )
+        point_tong_ban = line_base.mark_circle(color="#2E8B57", size=80, opacity=0.9).encode(
+            y=alt.Y("tong_ban:Q", axis=alt.Axis(title=None, labels=False, ticks=False, grid=False)),
+            tooltip=[
+                alt.Tooltip("moc_thoi_gian:T", title="Thời điểm", format="%d/%m/%Y %H:%M"),
+                alt.Tooltip("tong_ban:Q", title="Tổng bán", format=",.0f"),
+            ],
+        )
+
+        zoom_x = alt.selection_interval(bind="scales", encodings=["x"])
+
+        line_chart = (
+            alt.layer(
+                line_tong_gia,
+                point_tong_gia,
+                line_rating,
+                point_rating,
+                line_tong_ban,
+                point_tong_ban,
+            )
+            .resolve_scale(y="independent")
+            .add_params(zoom_x)
+            .properties(height=360)
+        )
+        st.altair_chart(line_chart, width="stretch")
+        st.caption(
+            "Biểu đồ hiển thị đủ 3 tiêu chí; trục phải dùng cho Tổng bán. Doanh thu ước tính = giá hiện tại x lượt mua."
+            " Dùng lăn chuột để zoom và kéo để di chuyển theo trục thời gian."
+        )
+
+        st.markdown("### Export dữ liệu cho Looker Studio")
+        line_totals_for_looker = minute_totals.copy()
+        line_totals_for_looker["thoi_diem_yyyy_mm_dd_hh_mm"] = line_totals_for_looker["moc_thoi_gian"].dt.strftime(
+            "%Y-%m-%d %H:%M"
+        )
+        line_totals_for_looker["tong_doanh_thu_uoc_tinh"] = line_totals_for_looker["tong_gia"]
+        category_timeseries_for_looker = (
+            trend_df.groupby(["moc_thoi_gian", "danh_muc"], as_index=False)
+            .agg(
+                tong_ban=("luot_mua", "sum"),
+                tong_gia=("doanh_thu_uoc_tinh", "sum"),
+                so_san_pham=("id_product", "nunique"),
+                rating_trung_binh=("diem_danh_gia", "mean"),
+            )
+            .sort_values(["moc_thoi_gian", "danh_muc"])
+        )
+        category_timeseries_for_looker["tong_doanh_thu_uoc_tinh"] = category_timeseries_for_looker["tong_gia"]
+        category_timeseries_for_looker["thoi_diem_yyyy_mm_dd_hh_mm"] = category_timeseries_for_looker[
+            "moc_thoi_gian"
+        ].dt.strftime("%Y-%m-%d %H:%M")
+        category_summary_for_looker = category_summary[
+            [
+                "danh_muc",
+                "so_san_pham",
+                "luot_mua_tong",
+                "tong_gia",
+                "gia_trung_binh",
+                "rating_trung_binh",
+            ]
+        ].sort_values("luot_mua_tong", ascending=False)
+        category_summary_for_looker["tong_doanh_thu_uoc_tinh"] = category_summary_for_looker["tong_gia"]
+
+        c1, c2 = st.columns(2)
+        with c1:
+            st.download_button(
+                "Tải CSV Looker - line_totals",
+                data=line_totals_for_looker.to_csv(index=False).encode("utf-8"),
+                file_name="looker_line_totals.csv",
+                mime="text/csv",
+                use_container_width=True,
+            )
+            st.download_button(
+                "Tải CSV Looker - category_timeseries",
+                data=category_timeseries_for_looker.to_csv(index=False).encode("utf-8"),
+                file_name="looker_category_timeseries.csv",
+                mime="text/csv",
+                use_container_width=True,
+            )
+        with c2:
+            st.download_button(
+                "Tải CSV Looker - category_summary",
+                data=category_summary_for_looker.to_csv(index=False).encode("utf-8"),
+                file_name="looker_category_summary.csv",
+                mime="text/csv",
+                use_container_width=True,
+            )
+    else:
+        st.info("Không có dữ liệu để vẽ xu hướng theo danh mục với lựa chọn hiện tại.")
+
+    lookback_days = st.selectbox("Bảng tổng hợp gần đây", [7, 30, 90], index=1)
     cutoff_time = pd.Timestamp.now() - pd.Timedelta(days=int(lookback_days))
     recent = filtered[filtered["thoi_diem"] >= cutoff_time].sort_values("thoi_diem")
 
     if not recent.empty:
-        summary = (
-            recent.groupby("id_product", as_index=False)
+        recent_summary = (
+            recent.groupby("danh_muc", as_index=False)
             .agg(
-                ten_san_pham=("ten_san_pham", "last"),
-                gia_dau=("gia_hien_tai", "first"),
-                gia_cuoi=("gia_hien_tai", "last"),
-                rating_dau=("diem_danh_gia", "first"),
-                rating_cuoi=("diem_danh_gia", "last"),
-                luot_mua_dau=("luot_mua", "first"),
-                luot_mua_cuoi=("luot_mua", "last"),
-                product_url=("product_url", "last"),
-                so_moc=("thoi_diem", "count"),
+                so_snapshot=("id_product", "count"),
+                so_san_pham=("id_product", "nunique"),
+                gia_trung_binh=("gia_hien_tai", "mean"),
+                rating_trung_binh=("diem_danh_gia", "mean"),
+                luot_mua_trung_binh=("luot_mua", "mean"),
+                luot_mua_tong=("luot_mua", "sum"),
             )
+            .sort_values("so_snapshot", ascending=False)
         )
-        summary["delta_gia"] = summary["gia_cuoi"] - summary["gia_dau"]
-        summary["delta_rating"] = summary["rating_cuoi"] - summary["rating_dau"]
-        summary["delta_luot_mua"] = summary["luot_mua_cuoi"] - summary["luot_mua_dau"]
-        summary = summary.sort_values("delta_gia", key=lambda s: s.abs(), ascending=False)
-        summary["chi_tiet"] = summary["product_url"]
-
-        st.dataframe(
-            summary[
-                [
-                    "id_product",
-                    "ten_san_pham",
-                    "so_moc",
-                    "gia_dau",
-                    "gia_cuoi",
-                    "delta_gia",
-                    "rating_dau",
-                    "rating_cuoi",
-                    "delta_rating",
-                    "luot_mua_dau",
-                    "luot_mua_cuoi",
-                    "delta_luot_mua",
-                    "chi_tiet",
-                ]
-            ],
-            width="stretch",
-            column_config={
-                "chi_tiet": st.column_config.LinkColumn("Chi tiết", display_text="Mở"),
-            },
-        )
+        st.dataframe(recent_summary, width="stretch")
 
 
 def render_duckdb_tab() -> None:
