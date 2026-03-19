@@ -1,0 +1,34 @@
+# Scheduler config cho job crawl nen (GitHub Actions / worker)
+enabled: true
+
+# Moc crawl: 5, 10, 20, 30, 60 (phut)
+interval_minutes: 5
+
+# So luong san pham crawl cho moi cap danh_muc-tu_khoa
+quantity: 10
+
+# Thu muc output DB
+output_dir: data
+
+# Danh sach cap crawl (them tung cap)
+pairs:
+  - danh_muc: dien_thoai
+    tu_khoa: iphone
+  - danh_muc: laptop
+    tu_khoa: macbook
+  - danh_muc: giay
+    tu_khoa: giay sneaker
+  - danh_muc: ao
+    tu_khoa: ao thun nam
+  - danh_muc: quan
+    tu_khoa: quan jean nam
+  - danh_muc: my_pham
+    tu_khoa: serum duong da
+  - danh_muc: dong_ho
+    tu_khoa: dong ho nam
+  - danh_muc: tui_xach
+    tu_khoa: tui xach nu
+  - danh_muc: phu_kien
+    tu_khoa: tai nghe bluetooth
+  - danh_muc: do_gia_dung
+    tu_khoa: noi chien khong dau

@@ -27,9 +27,33 @@ def create_raw_table(db_filename="tiki_scraped_data_raw.duckdb"):
                 nen_tang VARCHAR,           -- Platform (vd: tiki, shopee)
                 du_lieu JSON,               -- Toàn bộ JSON trả về từ API
                 ten_san_pham VARCHAR,       -- Tên sản phẩm
-                id_product BIGINT           -- ID của sản phẩm trên nền tảng đó
+                id_product BIGINT,          -- ID của sản phẩm trên nền tảng đó
+                danh_muc VARCHAR,
+                tu_khoa VARCHAR,
+                gia_hien_tai BIGINT,
+                gia_goc BIGINT,
+                diem_danh_gia DOUBLE,
+                luot_mua BIGINT,
+                product_url VARCHAR,
+                kieu_cao VARCHAR
             )
         """)
+
+        # Đảm bảo các cột mới luôn tồn tại cho DB cũ.
+        cols = {row[0] for row in con.execute("DESCRIBE scraped_raw_items_v2").fetchall()}
+        required = {
+            "danh_muc": "VARCHAR",
+            "tu_khoa": "VARCHAR",
+            "gia_hien_tai": "BIGINT",
+            "gia_goc": "BIGINT",
+            "diem_danh_gia": "DOUBLE",
+            "luot_mua": "BIGINT",
+            "product_url": "VARCHAR",
+            "kieu_cao": "VARCHAR",
+        }
+        for col_name, col_type in required.items():
+            if col_name not in cols:
+                con.execute(f"ALTER TABLE scraped_raw_items_v2 ADD COLUMN {col_name} {col_type}")
         
         # Kiểm tra xem bảng tạo thành công không
         tables = con.execute("SHOW TABLES").fetchall()
