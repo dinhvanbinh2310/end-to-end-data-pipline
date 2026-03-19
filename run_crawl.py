@@ -58,6 +58,23 @@ def parse_args():
     return parser.parse_args()
 
 
+def run_cycle(mode: str, pages: int, output_dir: str, max_items: int | None = None):
+    demo = "--demo" in sys.argv
+    p = 1 if demo else pages
+    print(f"\n[{time.strftime('%Y-%m-%d %H:%M:%S')}] BAT DAU CHU KY (mode={mode})...")
+    if mode == "existing":
+        refresh_existing_tiki_items(output_dir, max_items=max_items)
+    else:
+        for danh_muc, keywords in CATEGORIES.items():
+            for kw in keywords:
+                print(f"\n---> Danh muc: [{danh_muc}] | Tu khoa: '{kw}' | Pages: {p}")
+                try:
+                    scrape_tiki(kw, p, output_dir, danh_muc=danh_muc)
+                except Exception as e:
+                    print(f"[!] Loi khi cao '{kw}': {e}")
+    print(f"\n[{time.strftime('%Y-%m-%d %H:%M:%S')}] HOAN THANH CHU KY.\n")
+
+
 if __name__ == "__main__":
     args = parse_args()
     pages = 1 if args.demo else args.pages

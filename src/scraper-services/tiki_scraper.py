@@ -4,7 +4,7 @@ import json
 import argparse
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import duckdb
 import pandas as pd
@@ -207,12 +207,14 @@ def append_rows_to_raw_db(rows: list[dict[str, Any]], output_dir: str, dedupe_ho
                     """
                 ).fetchall()
             }
-            df = df[~df["id_product"].isin(recent_ids)]
+            id_col = cast(pd.Series, df["id_product"])
+            mask = id_col.isin(list(recent_ids))
+            df = cast(pd.DataFrame, df.loc[~mask])
 
         if df.empty:
             return 0, db_path
 
-        con.append(RAW_TABLE_NAME, df)
+        con.append(RAW_TABLE_NAME, cast(pd.DataFrame, df))
         return len(df), db_path
     except Exception as e:
         print(f"[!] LỖI DuckDB: {e}")
