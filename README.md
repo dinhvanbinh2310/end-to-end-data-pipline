@@ -144,7 +144,6 @@ Các tab chính:
 - Raw: xem file JSON thô và JSON đã clean.
 - Staging: xem bảng `products`, `models`, `attributes`, `shops`.
 - Mart: xem `products_full.csv`, lọc theo category/shop và tìm kiếm theo thuộc tính bằng dropdown.
-<<<<<<< HEAD
 - DuckDB: xem bảng trong `data/tiki_scraped_data.duckdb`.
 
 ## Deploy khuyến nghị (Streamlit + Scheduler)
@@ -195,7 +194,6 @@ Lưu ý quan trọng:
 
 - GitHub Actions có mốc nhỏ nhất là 5 phút cho cron.
 - Vì vậy, mốc nhỏ nhất khuyến nghị trong config là 5 phút.
-=======
 - DuckDB: xem bảng trong `data/tiki_scraped_data_raw.duckdb`.
 
 ## Sync DuckDB len BigQuery (Cloud)
@@ -229,4 +227,3 @@ python -m src.data_warehouse.sync_duckdb_to_bq
 ```
 
 Can cau hinh `.env`: `GOOGLE_APPLICATION_CREDENTIALS`, `BQ_PROJECT_ID`, `BQ_DATASET`.
->>>>>>> main
