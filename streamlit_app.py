@@ -860,22 +860,64 @@ def render_dashboard_tab() -> None:
 
 
 def render_duckdb_tab() -> None:
-    st.subheader("DuckDB Explorer")
-    st.caption(f"DB: {RAW_DB_PATH}")
+    st.subheader("DuckDB Explorer & SQL Console")
+    st.caption(f"Database: `{RAW_DB_PATH}`")
 
     if not RAW_DB_PATH.exists():
-        st.warning("Chưa tìm thấy file DB. Hãy cào dữ liệu trước.")
+        st.warning("⚠️ Chưa tìm thấy file DB. Hãy cào dữ liệu trước.")
         return
 
+    # --- Phần 1: Gõ lệnh SQL trực tiếp (SQL Console) ---
+    st.markdown("### 💻 SQL Query Console")
+    st.caption("Bạn có thể viết câu lệnh SQL DuckDB tùy ý tại đây để truy vấn trực tiếp:")
+
+    sample_queries = {
+        "1. Xem 10 sản phẩm mới nhất": "SELECT thoi_diem, danh_muc, ten_san_pham, gia_hien_tai, luot_mua, diem_danh_gia FROM scraped_raw_items_v2 ORDER BY thoi_diem DESC LIMIT 10",
+        "2. Thống kê sản phẩm theo danh mục": "SELECT danh_muc, COUNT(DISTINCT id_product) AS so_san_pham, COUNT(*) AS tong_snapshot, AVG(gia_hien_tai) AS gia_tb FROM scraped_raw_items_v2 GROUP BY danh_muc ORDER BY so_san_pham DESC",
+        "3. Top 10 sản phẩm bán chạy nhất": "SELECT ten_san_pham, danh_muc, gia_hien_tai, luot_mua, (gia_hien_tai * luot_mua) AS doanh_thu_uoc_tinh FROM scraped_raw_items_v2 ORDER BY luot_mua DESC NULLS LAST LIMIT 10",
+        "4. Tùy chỉnh câu lệnh riêng": ""
+    }
+
+    selected_sample = st.selectbox("📌 Chọn câu lệnh SQL mẫu hoặc tự viết:", list(sample_queries.keys()))
+    default_sql = sample_queries[selected_sample] if sample_queries[selected_sample] else "SELECT * FROM scraped_raw_items_v2 LIMIT 15"
+
+    user_sql = st.text_area("✍️ Câu lệnh SQL:", value=default_sql, height=120)
+
+    col_btn, _ = st.columns([1, 4])
+    with col_btn:
+        run_sql = st.button("🚀 Chạy truy vấn SQL", type="primary")
+
+    if run_sql and user_sql.strip():
+        try:
+            with duckdb.connect(str(RAW_DB_PATH), read_only=True) as con:
+                query_result = con.execute(user_sql).fetchdf()
+                st.success(f"✅ Truy vấn thành công! Trả về **{len(query_result):,}** dòng kết quả:")
+                st.dataframe(query_result, width="stretch")
+
+                # Nút tải kết quả CSV
+                csv_data = query_result.to_csv(index=False).encode("utf-8")
+                st.download_button(
+                    label="📥 Tải kết quả về máy (CSV)",
+                    data=csv_data,
+                    file_name="duckdb_query_result.csv",
+                    mime="text/csv"
+                )
+        except Exception as e:
+            st.error(f"❌ Lỗi thực thi SQL: {e}")
+
+    st.divider()
+
+    # --- Phần 2: Xem toàn bộ các bảng trong DB ---
+    st.markdown("### 📋 Danh sách bảng trong Database")
     tables_df = load_duckdb_tables()
     if tables_df.empty:
-        st.info("DB chưa có bảng")
+        st.info("DB chưa có bảng nào.")
         return
 
     st.dataframe(tables_df, width="stretch")
-    table_name = cast(str, st.selectbox("Chọn bảng", tables_df["name"].tolist()))
+    table_name = cast(str, st.selectbox("Chọn bảng để xem nhanh:", tables_df["name"].tolist()))
     total_rows = get_duckdb_table_row_count(table_name)
-    st.caption(f"Tổng số dòng trong bảng: {total_rows}")
+    st.caption(f"Tổng số dòng trong bảng `{table_name}`: **{total_rows:,}** dòng")
 
     slider_key = f"duckdb_rows_slider_{table_name}"
     input_key = f"duckdb_rows_input_{table_name}"
@@ -886,7 +928,6 @@ def render_duckdb_tab() -> None:
     if input_key not in st.session_state:
         st.session_state[input_key] = default_rows
 
-    # Keep state valid when table changes or row counts shift.
     st.session_state[slider_key] = min(max(int(st.session_state[slider_key]), 0), total_rows)
     st.session_state[input_key] = min(max(int(st.session_state[input_key]), 0), total_rows)
 
@@ -903,7 +944,7 @@ def render_duckdb_tab() -> None:
     col_slider, col_input = st.columns([3, 1])
     with col_slider:
         st.slider(
-            "Số dòng hiển thị (0 đến tổng số dòng)",
+            "Số dòng hiển thị",
             min_value=0,
             max_value=total_rows,
             step=1,
@@ -918,13 +959,9 @@ def render_duckdb_tab() -> None:
             step=1,
             key=input_key,
             on_change=_sync_slider_from_input,
-            help="Nhập giá trị tùy ý, nhấn Enter để cập nhật slider.",
         )
 
     limit = int(st.session_state[slider_key])
-    if limit == total_rows and total_rows > 100000:
-        st.warning("Bảng lớn, hiển thị toàn bộ có thể chậm. Nên dùng Search hoặc giảm số dòng preview.")
-
     preview_df = load_duckdb_preview(table_name=table_name, limit=limit)
     preview_df = filter_dataframe(preview_df, f"db_{table_name}")
 
