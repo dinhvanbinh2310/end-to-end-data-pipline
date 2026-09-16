@@ -14,6 +14,8 @@ import streamlit as st
 import streamlit.components.v1 as components
 import altair as alt
 
+from src.theme import inject_custom_css, COLORS, LINE_COLORS, CHART_PALETTE
+
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
 RAW_DB_PATH = DATA_DIR / "tiki_scraped_data_raw.duckdb"
@@ -383,7 +385,7 @@ def render_crawl_tab() -> None:
     countdown_id = f"auto-crawl-countdown-{next_run.strftime('%Y%m%d%H%M%S')}"
     components.html(
         f"""
-        <div id=\"{countdown_id}\" style=\"font-size: 0.95rem; color: #F5F7FA;\">
+        <div id=\"{countdown_id}\" style=\"font-size: 0.95rem; color: {COLORS['text_secondary']};\">
             Mốc cào hiện tại: mỗi {interval_label}. Lần cào tiếp theo dự kiến lúc {next_run.strftime('%H:%M:%S')} (còn {remaining_minutes:02d}:{remaining_seconds:02d}).
         </div>
         <script>
@@ -617,10 +619,11 @@ def render_dashboard_tab() -> None:
         bar_data["danh_muc"] = bar_data["danh_muc"].astype(str)
         horizontal_bar = (
             alt.Chart(bar_data)
-            .mark_bar()
+            .mark_bar(cornerRadiusEnd=4)
             .encode(
                 x=alt.X(f"{bar_pie_col}:Q", title=bar_pie_label),
                 y=alt.Y("danh_muc:N", sort="-x", title="Danh mục"),
+                color=alt.Color("danh_muc:N", scale=alt.Scale(range=CHART_PALETTE), legend=None),
                 tooltip=["danh_muc", bar_pie_col, "luot_mua_tong", "tong_gia", "so_san_pham", "gia_trung_binh", "rating_trung_binh"],
             )
             .properties(height=320)
@@ -636,7 +639,7 @@ def render_dashboard_tab() -> None:
             .mark_arc(innerRadius=55)
             .encode(
                 theta=alt.Theta(f"{bar_pie_col}:Q", title=bar_pie_label),
-                color=alt.Color("danh_muc:N", title="Danh mục"),
+                color=alt.Color("danh_muc:N", title="Danh mục", scale=alt.Scale(range=CHART_PALETTE)),
                 tooltip=["danh_muc", bar_pie_col, "luot_mua_tong", "tong_gia", "so_san_pham"],
             )
             .properties(height=320)
@@ -675,10 +678,10 @@ def render_dashboard_tab() -> None:
             )
         )
 
-        line_tong_gia = line_base.mark_line(color="#B22222", strokeWidth=2.5).encode(
+        line_tong_gia = line_base.mark_line(color=LINE_COLORS["revenue"], strokeWidth=2.5).encode(
             y=alt.Y(
                 "tong_gia:Q",
-                axis=alt.Axis(title="Doanh thu ước tính", titleColor="#B22222", labelColor="#B22222"),
+                axis=alt.Axis(title="Doanh thu ước tính", titleColor=LINE_COLORS["revenue"], labelColor=LINE_COLORS["revenue"]),
             ),
             tooltip=[
                 alt.Tooltip("moc_thoi_gian:T", title="Thời điểm", format="%d/%m/%Y %H:%M"),
@@ -687,7 +690,7 @@ def render_dashboard_tab() -> None:
                 alt.Tooltip("rating_tb:Q", title="Điểm đánh giá TB", format=".2f"),
             ],
         )
-        point_tong_gia = line_base.mark_circle(color="#B22222", size=80, opacity=0.9).encode(
+        point_tong_gia = line_base.mark_circle(color=LINE_COLORS["revenue"], size=80, opacity=0.9).encode(
             y=alt.Y("tong_gia:Q", axis=alt.Axis(title=None, labels=False, ticks=False, grid=False)),
             tooltip=[
                 alt.Tooltip("moc_thoi_gian:T", title="Thời điểm", format="%d/%m/%Y %H:%M"),
@@ -695,10 +698,10 @@ def render_dashboard_tab() -> None:
             ],
         )
 
-        line_rating = line_base.mark_line(color="#F39C12", strokeDash=[6, 4], strokeWidth=2).encode(
+        line_rating = line_base.mark_line(color=LINE_COLORS["rating"], strokeDash=[6, 4], strokeWidth=2).encode(
             y=alt.Y("rating_tb:Q", axis=alt.Axis(title=None, labels=False, ticks=False, grid=False))
         )
-        point_rating = line_base.mark_circle(color="#F39C12", size=70, opacity=0.9).encode(
+        point_rating = line_base.mark_circle(color=LINE_COLORS["rating"], size=70, opacity=0.9).encode(
             y=alt.Y("rating_tb:Q", axis=alt.Axis(title=None, labels=False, ticks=False, grid=False)),
             tooltip=[
                 alt.Tooltip("moc_thoi_gian:T", title="Thời điểm", format="%d/%m/%Y %H:%M"),
@@ -706,18 +709,18 @@ def render_dashboard_tab() -> None:
             ],
         )
 
-        line_tong_ban = line_base.mark_line(color="#2E8B57", strokeWidth=2.5).encode(
+        line_tong_ban = line_base.mark_line(color=LINE_COLORS["sales"], strokeWidth=2.5).encode(
             y=alt.Y(
                 "tong_ban:Q",
                 axis=alt.Axis(
                     title="Tổng bán",
-                    titleColor="#2E8B57",
-                    labelColor="#2E8B57",
+                    titleColor=LINE_COLORS["sales"],
+                    labelColor=LINE_COLORS["sales"],
                     orient="right",
                 ),
             )
         )
-        point_tong_ban = line_base.mark_circle(color="#2E8B57", size=80, opacity=0.9).encode(
+        point_tong_ban = line_base.mark_circle(color=LINE_COLORS["sales"], size=80, opacity=0.9).encode(
             y=alt.Y("tong_ban:Q", axis=alt.Axis(title=None, labels=False, ticks=False, grid=False)),
             tooltip=[
                 alt.Tooltip("moc_thoi_gian:T", title="Thời điểm", format="%d/%m/%Y %H:%M"),
@@ -839,26 +842,7 @@ def render_dashboard_tab() -> None:
 
 def main() -> None:
     st.set_page_config(page_title="Tiki Analytics Pipeline", page_icon="🛒", layout="wide")
-
-    # CSS Căn lề trái cho các nút bấm trên Sidebar
-    st.markdown(
-        """
-        <style>
-        [data-testid="stSidebar"] div.stButton > button {
-            justify-content: flex-start !important;
-            text-align: left !important;
-            padding-left: 16px !important;
-            border-radius: 0px !important;
-            height: 42px !important;
-        }
-        [data-testid="stSidebar"] div.stButton > button p {
-            font-size: 15px !important;
-            font-weight: 500 !important;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True,
-    )
+    inject_custom_css()
 
     if "current_page" not in st.session_state:
         st.session_state["current_page"] = "📊 Dashboard"
