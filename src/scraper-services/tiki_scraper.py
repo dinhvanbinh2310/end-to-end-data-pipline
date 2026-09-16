@@ -11,6 +11,11 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 
+try:
+    from curl_cffi import requests as curl_requests
+except ImportError:
+    curl_requests = None
+
 load_dotenv()
 
 RAW_DB_FILENAME = "tiki_scraped_data_raw.duckdb"
@@ -83,7 +88,6 @@ def ensure_raw_table_schema(con: duckdb.DuckDBPyConnection) -> None:
         if col not in existing_cols:
             con.execute(f"ALTER TABLE {RAW_TABLE_NAME} ADD COLUMN {col} {dtype}")
 
-
 DEFAULT_HEADERS = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
     "Accept": "application/json, text/plain, */*",
@@ -97,6 +101,29 @@ DEFAULT_HEADERS = {
     "sec-fetch-mode": "cors",
     "sec-fetch-site": "same-origin",
 }
+
+# Global shared session for connection pooling and cookie persistence
+_CURL_SESSION = None
+_REQUESTS_SESSION = None
+
+
+def _get_scraper_session():
+    global _CURL_SESSION, _REQUESTS_SESSION
+    if curl_requests is not None:
+        if _CURL_SESSION is None:
+            _CURL_SESSION = curl_requests.Session(impersonate="chrome120")
+            _CURL_SESSION.headers.update(DEFAULT_HEADERS)
+        return _CURL_SESSION, True
+    else:
+        if _REQUESTS_SESSION is None:
+            _REQUESTS_SESSION = requests.Session()
+            _REQUESTS_SESSION.headers.update(DEFAULT_HEADERS)
+            try:
+                # Warm-up to acquire initial cookies
+                _REQUESTS_SESSION.get("https://tiki.vn/", timeout=10)
+            except Exception:
+                pass
+        return _REQUESTS_SESSION, False
 
 
 def _log_msg(msg: str, log_list: list[str] | None = None) -> None:
@@ -120,10 +147,16 @@ def fetch_tiki_search_items(
         "page": page_number + 1,
     }
 
-    _log_msg(f"🌐 GET {url}?q={keyword}&page={page_number + 1}&limit={limit}", log_list)
+    session, is_curl_cffi = _get_scraper_session()
+    engine_name = "curl_cffi (Chrome TLS Bypass)" if is_curl_cffi else "requests"
+    _log_msg(f"🌐 [{engine_name}] GET {url}?q={keyword}&page={page_number + 1}&limit={limit}", log_list)
+
+    if not is_curl_cffi:
+        _log_msg("💡 Tip: Để vượt 100% mã 403, hãy cài đặt thư viện: `pip install curl_cffi`", log_list)
+
     try:
         t0 = time.time()
-        r = requests.get(url, params=params, headers=DEFAULT_HEADERS, timeout=15)
+        r = session.get(url, params=params, headers=DEFAULT_HEADERS, timeout=15)
         elapsed = time.time() - t0
         if r.status_code != 200:
             err_snippet = r.text[:300].strip()
@@ -143,10 +176,11 @@ def fetch_tiki_product_detail(
     log_list: list[str] | None = None,
 ) -> tuple[dict[str, Any], int | None, str | None]:
     url = f"https://tiki.vn/api/v2/products/{product_id}"
+    session, _ = _get_scraper_session()
 
     try:
         t0 = time.time()
-        r = requests.get(url, headers=DEFAULT_HEADERS, timeout=15)
+        r = session.get(url, headers=DEFAULT_HEADERS, timeout=15)
         elapsed = time.time() - t0
         if r.status_code != 200:
             err_snippet = r.text[:300].strip()

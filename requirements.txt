@@ -7,3 +7,4 @@ streamlit>=1.36.0
 google-cloud-bigquery>=3.0.0
 python-dotenv>=1.0.0
 pyarrow>=14.0.0
+curl_cffi>=0.7.0
