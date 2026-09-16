@@ -1,3 +1,6 @@
+import os
+import pandas as pd
+
 file_path = '../../data/staging/products.parquet'
 
 if not os.path.exists(file_path):

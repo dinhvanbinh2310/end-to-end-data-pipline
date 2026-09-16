@@ -1,7 +1,12 @@
 import os
+import sys
 import yaml
 import duckdb
 from pathlib import Path
+
+# Add project root to sys.path
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from src.migration.create_raw_table import create_raw_table
 
 
