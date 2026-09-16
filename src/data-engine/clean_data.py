@@ -28,6 +28,7 @@ from datetime import datetime, timezone, timedelta
 
 import duckdb
 import pandas as pd
+from dotenv import load_dotenv
 
 # ───────────────────────────── CONFIG ──────────────────────────────
 logging.basicConfig(
@@ -39,10 +40,18 @@ log = logging.getLogger(__name__)
 
 # Đường dẫn mặc định
 # clean_data.py nằm ở:  src/data-engine/clean_data.py
-# DuckDB nằm ở:         data/tiki_scraped_data_raw.duckdb  (gốc project)
+# DuckDB nằm ở:         data/tiki_scraped_data_raw.duckdb  (gốc project hoặc từ .env)
 _CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
-DB_PATH      = os.path.abspath(os.path.join(_CURRENT_DIR, "..", "..", "data", "tiki_scraped_data_raw.duckdb"))
-_DATA_DIR    = os.path.abspath(os.path.join(_CURRENT_DIR, "..", "..", "data"))
+_PROJECT_ROOT = os.path.abspath(os.path.join(_CURRENT_DIR, "..", ".."))
+load_dotenv(os.path.join(_PROJECT_ROOT, ".env"))
+
+_env_db = os.getenv("DUCKDB_PATH")
+if _env_db:
+    DB_PATH = os.path.abspath(_env_db) if os.path.isabs(_env_db) else os.path.abspath(os.path.join(_PROJECT_ROOT, _env_db))
+else:
+    DB_PATH = os.path.abspath(os.path.join(_PROJECT_ROOT, "data", "tiki_scraped_data_raw.duckdb"))
+
+_DATA_DIR    = os.path.abspath(os.path.join(_PROJECT_ROOT, "data"))
 STAGING_DIR  = os.path.join(_DATA_DIR, "staging")
 MART_DIR     = os.path.join(_DATA_DIR, "mart")
 TABLE_NAME   = "scraped_raw_items_v2"

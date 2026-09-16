@@ -1,20 +1,35 @@
 import duckdb
 import os
 from pathlib import Path
+from dotenv import load_dotenv
 
-def create_raw_table(db_filename="tiki_scraped_data_raw.duckdb"):
+def create_raw_table(db_filename: str | None = None):
     """
     Tạo bảng dữ liệu thô (raw) theo đúng chuẩn cấu trúc của Leader.
     """
-    
-    # Đảm bảo thư mục lưu data tồn tại
     script_dir = os.path.dirname(os.path.abspath(__file__))
     project_root = Path(script_dir).parent.parent
-    output_dir = os.path.join(project_root, "data")
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
-    
-    db_path = os.path.join(output_dir, db_filename)
-    
+    load_dotenv(project_root / ".env")
+
+    if db_filename is None:
+        env_path = os.getenv("DUCKDB_PATH")
+        if env_path:
+            p = Path(env_path)
+            db_path = str(p if p.is_absolute() else (project_root / p).resolve())
+        else:
+            db_path = str(project_root / "data" / "tiki_scraped_data_raw.duckdb")
+    else:
+        p = Path(db_filename)
+        if p.is_absolute():
+            db_path = str(p)
+        elif "/" in db_filename or "\\" in db_filename:
+            db_path = str((project_root / p).resolve())
+        else:
+            output_dir = os.path.join(project_root, "data")
+            Path(output_dir).mkdir(parents=True, exist_ok=True)
+            db_path = os.path.join(output_dir, db_filename)
+
+    Path(db_path).parent.mkdir(parents=True, exist_ok=True)
     print(f"[*] Đang thực thi Migration tạo cấu trúc bảng Database: {db_path}")
     
     try:

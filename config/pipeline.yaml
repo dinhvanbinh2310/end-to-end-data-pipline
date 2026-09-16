@@ -5,7 +5,7 @@ shopee:
   request_delay_sec: 1
 
 paths:
-  duckdb: data/shopee.duckdb
+  duckdb: data/tiki_scraped_data_raw.duckdb
   raw: data/raw
   rejected: data/rejected
 

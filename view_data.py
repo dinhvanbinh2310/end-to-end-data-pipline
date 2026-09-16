@@ -1,11 +1,25 @@
 import duckdb
 import json
 import os
+from pathlib import Path
+from dotenv import load_dotenv
 
-def view_data(db_filename="tiki_scraped_data_raw.duckdb", limit=1):
+def view_data(db_filename: str | None = None, limit=1):
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    db_path = os.path.join(script_dir, "data", db_filename)
-    
+    load_dotenv(os.path.join(script_dir, ".env"))
+
+    if db_filename is None:
+        env_path = os.getenv("DUCKDB_PATH")
+        if env_path:
+            db_path = env_path if os.path.isabs(env_path) else os.path.join(script_dir, env_path)
+        else:
+            db_path = os.path.join(script_dir, "data", "tiki_scraped_data_raw.duckdb")
+    else:
+        if os.path.isabs(db_filename) or "/" in db_filename or "\\" in db_filename:
+            db_path = db_filename if os.path.isabs(db_filename) else os.path.join(script_dir, db_filename)
+        else:
+            db_path = os.path.join(script_dir, "data", db_filename)
+
     if not os.path.exists(db_path):
         print(f"[!] Lỗi: Không tìm thấy file dữ liệu '{db_path}'.")
         print("[!] Bạn cần chạy file run_crawl.py ít nhất 1 lần để có dữ liệu mới.")

@@ -9,14 +9,31 @@ from typing import Any, cast
 import duckdb
 import pandas as pd
 import requests
+from dotenv import load_dotenv
+
+load_dotenv()
 
 RAW_DB_FILENAME = "tiki_scraped_data_raw.duckdb"
 RAW_TABLE_NAME = "scraped_raw_items_v2"
 
 
-def build_db_path(output_dir: str) -> str:
-    Path(output_dir).mkdir(parents=True, exist_ok=True)
-    return os.path.join(output_dir, RAW_DB_FILENAME)
+def build_db_path(output_dir: str = "data") -> str:
+    env_path = os.getenv("DUCKDB_PATH")
+    if env_path:
+        p = Path(env_path)
+        if p.is_absolute():
+            p.parent.mkdir(parents=True, exist_ok=True)
+            return str(p)
+        if "/" not in env_path and "\\" not in env_path:
+            out = Path(output_dir)
+            out.mkdir(parents=True, exist_ok=True)
+            return str(out / env_path)
+        p.parent.mkdir(parents=True, exist_ok=True)
+        return str(p)
+
+    out = Path(output_dir)
+    out.mkdir(parents=True, exist_ok=True)
+    return str(out / RAW_DB_FILENAME)
 
 
 def table_exists(con: duckdb.DuckDBPyConnection, table_name: str) -> bool:

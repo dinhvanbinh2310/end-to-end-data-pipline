@@ -16,7 +16,12 @@ def sync_raw_to_bq(duck_path: str | Path | None = None):
     root = Path(__file__).resolve().parent.parent.parent
 
     if duck_path is None:
-        duck_path = root / "data" / "tiki_scraped_data_raw.duckdb"
+        env_duck = os.getenv("DUCKDB_PATH")
+        if env_duck:
+            p = Path(env_duck)
+            duck_path = p if p.is_absolute() else (root / p).resolve()
+        else:
+            duck_path = root / "data" / "tiki_scraped_data_raw.duckdb"
     else:
         duck_path = Path(duck_path)
 

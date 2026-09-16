@@ -3,6 +3,7 @@
 # pyright: reportCallIssue=false, reportArgumentType=false
 # pyright: reportCallIssue=false, reportArgumentType=false
 # pyright: reportCallIssue=false, reportArgumentType=false
+import os
 import sys
 from typing import Any, cast
 from pathlib import Path
@@ -13,12 +14,20 @@ import pandas as pd
 import streamlit as st
 import streamlit.components.v1 as components
 import altair as alt
+from dotenv import load_dotenv
 
 from src.theme import inject_custom_css, COLORS, LINE_COLORS, CHART_PALETTE
 
 BASE_DIR = Path(__file__).resolve().parent
 DATA_DIR = BASE_DIR / "data"
-RAW_DB_PATH = DATA_DIR / "tiki_scraped_data_raw.duckdb"
+
+load_dotenv(BASE_DIR / ".env")
+_env_db = os.getenv("DUCKDB_PATH")
+if _env_db:
+    _p = Path(_env_db)
+    RAW_DB_PATH = _p if _p.is_absolute() else (BASE_DIR / _p).resolve()
+else:
+    RAW_DB_PATH = DATA_DIR / "tiki_scraped_data_raw.duckdb"
 
 SCRAPER_DIR = BASE_DIR / "src" / "scraper-services"
 sys.path.insert(0, str(BASE_DIR))
