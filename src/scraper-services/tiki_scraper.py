@@ -89,17 +89,11 @@ def ensure_raw_table_schema(con: duckdb.DuckDBPyConnection) -> None:
             con.execute(f"ALTER TABLE {RAW_TABLE_NAME} ADD COLUMN {col} {dtype}")
 
 DEFAULT_HEADERS = {
-    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
-    "Accept": "application/json, text/plain, */*",
-    "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
-    "Referer": "https://tiki.vn/",
-    "Origin": "https://tiki.vn",
-    "sec-ch-ua": '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
-    "sec-ch-ua-mobile": "?0",
-    "sec-ch-ua-platform": '"Windows"',
-    "sec-fetch-dest": "empty",
-    "sec-fetch-mode": "cors",
-    "sec-fetch-site": "same-origin",
+    "User-Agent": "PostmanRuntime/7.56.1",
+    "Accept": "*/*",
+    "Accept-Encoding": "gzip, deflate, br",
+    "Connection": "keep-alive",
+    "Cache-Control": "no-cache",
 }
 
 # Global shared session for connection pooling and cookie persistence
@@ -118,11 +112,6 @@ def _get_scraper_session():
         if _REQUESTS_SESSION is None:
             _REQUESTS_SESSION = requests.Session()
             _REQUESTS_SESSION.headers.update(DEFAULT_HEADERS)
-            try:
-                # Warm-up to acquire initial cookies
-                _REQUESTS_SESSION.get("https://tiki.vn/", timeout=10)
-            except Exception:
-                pass
         return _REQUESTS_SESSION, False
 
 
