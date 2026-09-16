@@ -568,18 +568,6 @@ def render_dashboard_tab() -> None:
         st.warning("Không có dữ liệu danh mục sau khi lọc.")
         return
 
-    coverage_rows = []
-    existing_categories = set(cast(pd.Series, filtered["danh_muc"]).astype(str).unique().tolist())
-    for cat in DASHBOARD_TARGET_CATEGORIES:
-        coverage_rows.append(
-            {
-                "danh_muc": cat,
-                "co_du_lieu": cat in existing_categories,
-            }
-        )
-    st.markdown("### Trạng thái dữ liệu 10 danh mục")
-    st.dataframe(pd.DataFrame(coverage_rows), width="stretch")
-
     # Mỗi sản phẩm lấy snapshot mới nhất để thống kê current-state theo danh mục.
     latest_per_product = cast(
         pd.DataFrame,
@@ -596,6 +584,7 @@ def render_dashboard_tab() -> None:
     avg_price = _safe_float(latest_per_product["gia_hien_tai"].mean(), 0.0)
     avg_rating = _safe_float(latest_per_product["diem_danh_gia"].mean(), 0.0)
 
+    # 1. Hiển thị KPI Metrics ngay trên đầu
     m1, m2, m3, m4 = st.columns(4)
     m1.metric("Tổng sản phẩm", f"{total_products:,}")
     m2.metric("Tổng danh mục", f"{total_categories:,}")
@@ -616,6 +605,8 @@ def render_dashboard_tab() -> None:
         .sort_values("so_san_pham", ascending=False)
     )
 
+    # 2. Biểu đồ chính lên ngay sau Metrics
+    st.markdown("### 📊 Biểu đồ phân tích chính")
     metric_map = {
         "Giá": {
             "summary_col": "tong_gia",
@@ -641,8 +632,6 @@ def render_dashboard_tab() -> None:
     )
     bar_pie_col = cast(str, metric_map[selected_bar_pie_metric]["summary_col"])
     bar_pie_label = cast(str, metric_map[selected_bar_pie_metric]["summary_label"])
-
-    st.markdown("### Biểu đồ chính")
     chart_col1, chart_col2 = st.columns(2)
     with chart_col1:
         st.caption(f"Biểu đồ cột ngang: Top danh mục theo {bar_pie_label.lower()}")
@@ -857,6 +846,18 @@ def render_dashboard_tab() -> None:
         )
         st.dataframe(recent_summary, width="stretch")
 
+    with st.expander("📋 Xem trạng thái phủ dữ liệu 10 danh mục"):
+        coverage_rows = []
+        existing_categories = set(cast(pd.Series, filtered["danh_muc"]).astype(str).unique().tolist())
+        for cat in DASHBOARD_TARGET_CATEGORIES:
+            coverage_rows.append(
+                {
+                    "danh_muc": cat,
+                    "co_du_lieu": cat in existing_categories,
+                }
+            )
+        st.dataframe(pd.DataFrame(coverage_rows), width="stretch")
+
 
 def render_duckdb_tab() -> None:
     st.subheader("DuckDB Explorer")
@@ -940,6 +941,9 @@ def render_duckdb_tab() -> None:
 
 
 def main() -> None:
+    st.set_page_config(page_title="Tiki Crawl Dashboard", layout="wide")
+    st.title("Tiki Crawl Dashboard")
+    st.caption("Cào mới, sync giá, và xem biến động dữ liệu theo snapshots")
 
     with st.sidebar:
         st.header("Thông tin")
