@@ -29,12 +29,17 @@ if _env_db:
 else:
     RAW_DB_PATH = DATA_DIR / "tiki_scraped_data_raw.duckdb"
 
+import importlib
+
 SCRAPER_DIR = BASE_DIR / "src" / "scraper-services"
 sys.path.insert(0, str(BASE_DIR))
 sys.path.insert(0, str(SCRAPER_DIR))
 
 try:
-    from tiki_scraper import crawl_new_products, sync_prices_from_existing
+    import tiki_scraper
+    importlib.reload(tiki_scraper)
+    crawl_new_products = tiki_scraper.crawl_new_products
+    sync_prices_from_existing = tiki_scraper.sync_prices_from_existing
 except Exception:
     crawl_new_products = None
     sync_prices_from_existing = None
@@ -233,12 +238,15 @@ def render_crawl_tab() -> None:
                 run_rows: list[dict[str, object]] = []
                 crawl_logs: list[str] = [f"=== BẮT ĐẦU CÀO MỚI [{run_snapshot_time}] ==="]
                 with st.spinner("Đang cào dữ liệu mới..."):
+                    import importlib
+                    import tiki_scraper
+                    importlib.reload(tiki_scraper)
                     for category in selected_manual_categories:
                         keyword = MANUAL_DEFAULT_KEYWORDS.get(category, "").strip()
                         if not keyword:
                             continue
 
-                        result = crawl_new_products(
+                        result = tiki_scraper.crawl_new_products(
                             keyword=keyword,
                             quantity=int(quantity),
                             output_dir=str(DATA_DIR),
@@ -286,7 +294,10 @@ def render_crawl_tab() -> None:
             sync_snapshot_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             sync_logs: list[str] = [f"=== BẮT ĐẦU SYNC GIÁ [{sync_snapshot_time}] ==="]
             with st.spinner("Đang sync giá sản phẩm cũ..."):
-                result = sync_prices_from_existing(
+                import importlib
+                import tiki_scraper
+                importlib.reload(tiki_scraper)
+                result = tiki_scraper.sync_prices_from_existing(
                     output_dir=str(DATA_DIR),
                     max_items=int(max_items),
                     delay_seconds=float(delay_seconds),

@@ -86,21 +86,8 @@ def ensure_raw_table_schema(con: duckdb.DuckDBPyConnection) -> None:
 DEFAULT_HEADERS = {
     "User-Agent": "PostmanRuntime/7.56.1",
     "Accept": "*/*",
-    "Accept-Encoding": "gzip, deflate, br",
-    "Connection": "keep-alive",
-    "Cache-Control": "no-cache",
+    "Host": "tiki.vn",
 }
-
-# Global shared session
-_SESSION = None
-
-
-def _get_scraper_session():
-    global _SESSION
-    if _SESSION is None:
-        _SESSION = requests.Session()
-        _SESSION.headers.update(DEFAULT_HEADERS)
-    return _SESSION
 
 
 def _log_msg(msg: str, log_list: list[str] | None = None) -> None:
@@ -124,15 +111,14 @@ def fetch_tiki_search_items(
         "page": page_number + 1,
     }
 
-    session = _get_scraper_session()
-    _log_msg(f"🌐 [Postman Engine] GET {url}?q={keyword}&page={page_number + 1}&limit={limit}", log_list)
+    _log_msg(f"🌐 [Postman Client] GET {url}?q={keyword}&page={page_number + 1}&limit={limit}", log_list)
 
     try:
         t0 = time.time()
-        r = session.get(url, params=params, headers=DEFAULT_HEADERS, timeout=15)
+        r = requests.get(url, params=params, headers=DEFAULT_HEADERS, timeout=15)
         elapsed = time.time() - t0
         if r.status_code != 200:
-            err_snippet = r.text[:300].strip()
+            err_snippet = r.text[:300].strip() or f"Reason: {r.reason} | Server: {r.headers.get('Server', 'unknown')}"
             _log_msg(f"❌ [HTTP {r.status_code}] Lỗi API Tiki ({elapsed:.2f}s): {err_snippet}", log_list)
             return {}, r.status_code, f"HTTP {r.status_code}: {err_snippet}"
         data = r.json()
@@ -149,14 +135,13 @@ def fetch_tiki_product_detail(
     log_list: list[str] | None = None,
 ) -> tuple[dict[str, Any], int | None, str | None]:
     url = f"https://tiki.vn/api/v2/products/{product_id}"
-    session = _get_scraper_session()
 
     try:
         t0 = time.time()
-        r = session.get(url, headers=DEFAULT_HEADERS, timeout=15)
+        r = requests.get(url, headers=DEFAULT_HEADERS, timeout=15)
         elapsed = time.time() - t0
         if r.status_code != 200:
-            err_snippet = r.text[:300].strip()
+            err_snippet = r.text[:300].strip() or f"Reason: {r.reason} | Server: {r.headers.get('Server', 'unknown')}"
             _log_msg(f"❌ [HTTP {r.status_code}] Chi tiết SP {product_id} ({elapsed:.2f}s): {err_snippet}", log_list)
             return {}, r.status_code, f"HTTP {r.status_code}: {err_snippet}"
         return r.json(), 200, None
