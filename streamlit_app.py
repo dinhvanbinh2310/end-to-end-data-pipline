@@ -840,6 +840,26 @@ def render_dashboard_tab() -> None:
 def main() -> None:
     st.set_page_config(page_title="Tiki Analytics Pipeline", page_icon="🛒", layout="wide")
 
+    # CSS Căn lề trái cho các nút bấm trên Sidebar
+    st.markdown(
+        """
+        <style>
+        [data-testid="stSidebar"] div.stButton > button {
+            justify-content: flex-start !important;
+            text-align: left !important;
+            padding-left: 16px !important;
+            border-radius: 0px !important;
+            height: 42px !important;
+        }
+        [data-testid="stSidebar"] div.stButton > button p {
+            font-size: 15px !important;
+            font-weight: 500 !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
     if "current_page" not in st.session_state:
         st.session_state["current_page"] = "📊 Dashboard"
 
