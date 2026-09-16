@@ -949,13 +949,15 @@ def main() -> None:
         st.write(f"DB path: {RAW_DB_PATH}")
         st.write(f"DB tồn tại: {'Có' if RAW_DB_PATH.exists() else 'Chưa'}")
 
-    tab_crawl, tab_snapshots, tab_dashboard, tab_duckdb = st.tabs(["Crawl", "Snapshots", "Dashboard", "DuckDB"])
-    with tab_crawl:
-        render_crawl_tab()
-    with tab_snapshots:
-        render_snapshot_tab()
+    tab_dashboard, tab_snapshots, tab_crawl, tab_duckdb = st.tabs(
+        ["📊 Dashboard", "📈 Snapshots", "🕷️ Crawl", "🗄️ DuckDB"]
+    )
     with tab_dashboard:
         render_dashboard_tab()
+    with tab_snapshots:
+        render_snapshot_tab()
+    with tab_crawl:
+        render_crawl_tab()
     with tab_duckdb:
         render_duckdb_tab()
 
