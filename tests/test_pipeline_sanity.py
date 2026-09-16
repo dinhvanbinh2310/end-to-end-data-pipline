@@ -59,3 +59,11 @@ def test_ci_branch_workflow():
     pipeline_version = "1.0.0"
     assert pipeline_version == "1.0.0"
 
+
+def test_intentional_failure():
+    """Test case cố tình tạo lỗi để xem CI cảnh báo đỏ."""
+    expected_status = "SUCCESS"
+    actual_status = "FAILED_INTENTIONALLY"
+    assert actual_status == expected_status, "CỐ TÌNH GÂY LỖI: Trạng thái không đạt chuẩn để test CI!"
+
+
