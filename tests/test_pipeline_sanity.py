@@ -54,16 +54,14 @@ def test_duckdb_migration_creates_table(tmp_path):
     con.close()
 
 
-def test_ci_branch_workflow():
-    """Test case để kiểm tra CI kích hoạt trên branch mới."""
-    pipeline_version = "1.0.0"
-    assert pipeline_version == "1.0.0"
+def test_crawler_categories_config():
+    """Kiểm tra danh sách danh mục cào trong run_crawl có hợp lệ không."""
+    from run_crawl import CATEGORIES
+    assert isinstance(CATEGORIES, dict), "CATEGORIES phải là một dictionary"
+    assert len(CATEGORIES) > 0, "CATEGORIES không được rỗng"
+    for category_name, keywords in CATEGORIES.items():
+        assert len(keywords) > 0, f"Danh mục '{category_name}' không được để trống từ khóa"
 
 
-def test_intentional_failure():
-    """Test case cố tình tạo lỗi để xem CI cảnh báo đỏ."""
-    expected_status = "SUCCESS"
-    actual_status = "Fail"
-    assert actual_status == expected_status, "CỐ TÌNH GÂY LỖI: Trạng thái không đạt chuẩn để test CI!"
 
 
