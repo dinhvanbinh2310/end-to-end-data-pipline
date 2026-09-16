@@ -838,25 +838,29 @@ def render_dashboard_tab() -> None:
 
 
 def main() -> None:
-    st.set_page_config(page_title="Tiki Crawl Dashboard", layout="wide")
-    st.title("Tiki Crawl Dashboard")
-    st.caption("Cào mới, sync giá, và xem biến động dữ liệu theo snapshots")
+    st.set_page_config(page_title="Tiki Analytics Pipeline", page_icon="🛒", layout="wide")
 
     with st.sidebar:
-        st.header("Thông tin")
-        st.write(f"DB path: {RAW_DB_PATH}")
-        st.write(f"DB tồn tại: {'Có' if RAW_DB_PATH.exists() else 'Chưa'}")
+        st.markdown("## 🛒 **Tiki Pipeline**")
+        st.caption("Quản lý dữ liệu & phân tích thị trường")
 
-    tab_dashboard, tab_snapshots, tab_crawl, tab_duckdb = st.tabs(
-        ["📊 Dashboard", "📈 Snapshots", "🕷️ Crawl", "🗄️ DuckDB"]
-    )
-    with tab_dashboard:
+        selected_page = st.radio(
+            "Chuyển trang",
+            options=["📊 Dashboard", "📈 Snapshots", "🕷️ Crawl", "🗄️ DuckDB"],
+            index=0,
+            label_visibility="collapsed",
+        )
+
+        st.divider()
+        st.caption(f"💾 **Database:** `{'Sẵn sàng' if RAW_DB_PATH.exists() else 'Chưa có'}`")
+
+    if selected_page == "📊 Dashboard":
         render_dashboard_tab()
-    with tab_snapshots:
+    elif selected_page == "📈 Snapshots":
         render_snapshot_tab()
-    with tab_crawl:
+    elif selected_page == "🕷️ Crawl":
         render_crawl_tab()
-    with tab_duckdb:
+    elif selected_page == "🗄️ DuckDB":
         render_duckdb_tab(RAW_DB_PATH)
 
 
