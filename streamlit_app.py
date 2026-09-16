@@ -840,27 +840,44 @@ def render_dashboard_tab() -> None:
 def main() -> None:
     st.set_page_config(page_title="Tiki Analytics Pipeline", page_icon="🛒", layout="wide")
 
+    if "current_page" not in st.session_state:
+        st.session_state["current_page"] = "📊 Dashboard"
+
     with st.sidebar:
         st.markdown("## 🛒 **Tiki Pipeline**")
         st.caption("Quản lý dữ liệu & phân tích thị trường")
+        st.write("")
 
-        selected_page = st.radio(
-            "Chuyển trang",
-            options=["📊 Dashboard", "📈 Snapshots", "🕷️ Crawl", "🗄️ DuckDB"],
-            index=0,
-            label_visibility="collapsed",
-        )
+        nav_items = [
+            "📊 Dashboard",
+            "📈 Snapshots",
+            "🕷️ Crawl",
+            "🗄️ DuckDB",
+        ]
+
+        for item in nav_items:
+            is_active = st.session_state["current_page"] == item
+            if st.button(
+                item,
+                key=f"btn_nav_{item}",
+                type="primary" if is_active else "secondary",
+                use_container_width=True,
+            ):
+                if st.session_state["current_page"] != item:
+                    st.session_state["current_page"] = item
+                    st.rerun()
 
         st.divider()
         st.caption(f"💾 **Database:** `{'Sẵn sàng' if RAW_DB_PATH.exists() else 'Chưa có'}`")
 
-    if selected_page == "📊 Dashboard":
+    current_page = st.session_state["current_page"]
+    if current_page == "📊 Dashboard":
         render_dashboard_tab()
-    elif selected_page == "📈 Snapshots":
+    elif current_page == "📈 Snapshots":
         render_snapshot_tab()
-    elif selected_page == "🕷️ Crawl":
+    elif current_page == "🕷️ Crawl":
         render_crawl_tab()
-    elif selected_page == "🗄️ DuckDB":
+    elif current_page == "🗄️ DuckDB":
         render_duckdb_tab(RAW_DB_PATH)
 
 
