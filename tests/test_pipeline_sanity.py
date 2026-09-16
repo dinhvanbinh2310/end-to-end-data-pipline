@@ -63,7 +63,7 @@ def test_ci_branch_workflow():
 def test_intentional_failure():
     """Test case cố tình tạo lỗi để xem CI cảnh báo đỏ."""
     expected_status = "SUCCESS"
-    actual_status = "SUCCESS"
+    actual_status = "Fail"
     assert actual_status == expected_status, "CỐ TÌNH GÂY LỖI: Trạng thái không đạt chuẩn để test CI!"
 
 
