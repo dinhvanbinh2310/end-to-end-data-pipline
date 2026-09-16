@@ -11,11 +11,6 @@ import pandas as pd
 import requests
 from dotenv import load_dotenv
 
-try:
-    from curl_cffi import requests as curl_requests
-except ImportError:
-    curl_requests = None
-
 load_dotenv()
 
 RAW_DB_FILENAME = "tiki_scraped_data_raw.duckdb"
@@ -96,23 +91,16 @@ DEFAULT_HEADERS = {
     "Cache-Control": "no-cache",
 }
 
-# Global shared session for connection pooling and cookie persistence
-_CURL_SESSION = None
-_REQUESTS_SESSION = None
+# Global shared session
+_SESSION = None
 
 
 def _get_scraper_session():
-    global _CURL_SESSION, _REQUESTS_SESSION
-    if curl_requests is not None:
-        if _CURL_SESSION is None:
-            _CURL_SESSION = curl_requests.Session(impersonate="chrome120")
-            _CURL_SESSION.headers.update(DEFAULT_HEADERS)
-        return _CURL_SESSION, True
-    else:
-        if _REQUESTS_SESSION is None:
-            _REQUESTS_SESSION = requests.Session()
-            _REQUESTS_SESSION.headers.update(DEFAULT_HEADERS)
-        return _REQUESTS_SESSION, False
+    global _SESSION
+    if _SESSION is None:
+        _SESSION = requests.Session()
+        _SESSION.headers.update(DEFAULT_HEADERS)
+    return _SESSION
 
 
 def _log_msg(msg: str, log_list: list[str] | None = None) -> None:
@@ -136,12 +124,8 @@ def fetch_tiki_search_items(
         "page": page_number + 1,
     }
 
-    session, is_curl_cffi = _get_scraper_session()
-    engine_name = "curl_cffi (Chrome TLS Bypass)" if is_curl_cffi else "requests"
-    _log_msg(f"🌐 [{engine_name}] GET {url}?q={keyword}&page={page_number + 1}&limit={limit}", log_list)
-
-    if not is_curl_cffi:
-        _log_msg("💡 Tip: Để vượt 100% mã 403, hãy cài đặt thư viện: `pip install curl_cffi`", log_list)
+    session = _get_scraper_session()
+    _log_msg(f"🌐 [Postman Engine] GET {url}?q={keyword}&page={page_number + 1}&limit={limit}", log_list)
 
     try:
         t0 = time.time()
@@ -165,7 +149,7 @@ def fetch_tiki_product_detail(
     log_list: list[str] | None = None,
 ) -> tuple[dict[str, Any], int | None, str | None]:
     url = f"https://tiki.vn/api/v2/products/{product_id}"
-    session, _ = _get_scraper_session()
+    session = _get_scraper_session()
 
     try:
         t0 = time.time()
