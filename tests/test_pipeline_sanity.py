@@ -52,3 +52,10 @@ def test_duckdb_migration_creates_table(tmp_path):
     required_cols = {"thoi_diem", "ten_san_pham", "gia_hien_tai", "danh_muc", "kieu_cao"}
     assert required_cols.issubset(columns)
     con.close()
+
+
+def test_ci_branch_workflow():
+    """Test case để kiểm tra CI kích hoạt trên branch mới."""
+    pipeline_version = "1.0.0"
+    assert pipeline_version == "1.0.0"
+
