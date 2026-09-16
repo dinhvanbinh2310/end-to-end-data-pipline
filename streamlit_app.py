@@ -940,9 +940,6 @@ def render_duckdb_tab() -> None:
 
 
 def main() -> None:
-    st.set_page_config(page_title="Tiki Crawl Dashboard", layout="wide")
-    st.title("Tiki Crawl Dashboard")
-    st.caption("Cào mới, sync giá, và xem biến động dữ liệu theo snapshots")
 
     with st.sidebar:
         st.header("Thông tin")
