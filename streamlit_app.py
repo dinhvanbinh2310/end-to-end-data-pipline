@@ -231,6 +231,7 @@ def render_crawl_tab() -> None:
                 total_inserted = 0
                 total_requested = 0
                 run_rows: list[dict[str, object]] = []
+                crawl_logs: list[str] = [f"=== BẮT ĐẦU CÀO MỚI [{run_snapshot_time}] ==="]
                 with st.spinner("Đang cào dữ liệu mới..."):
                     for category in selected_manual_categories:
                         keyword = MANUAL_DEFAULT_KEYWORDS.get(category, "").strip()
@@ -243,6 +244,7 @@ def render_crawl_tab() -> None:
                             output_dir=str(DATA_DIR),
                             danh_muc=category,
                             snapshot_time=run_snapshot_time,
+                            log_list=crawl_logs,
                         )
                         inserted = int(result.get("inserted", 0))
                         requested = int(result.get("requested", quantity))
@@ -257,9 +259,18 @@ def render_crawl_tab() -> None:
                             }
                         )
 
-                st.success(
-                    f"Đã thêm {total_inserted}/{total_requested} bản ghi mới vào DB. Mốc thời gian batch: {run_snapshot_time}."
-                )
+                crawl_logs.append(f"=== KẾT THÚC BATCH: Đã thêm {total_inserted}/{total_requested} bản ghi ===")
+                st.session_state["crawl_live_logs"] = crawl_logs
+
+                if total_inserted > 0:
+                    st.success(
+                        f"🎉 Đã thêm {total_inserted}/{total_requested} bản ghi mới vào DB. Mốc thời gian batch: {run_snapshot_time}."
+                    )
+                else:
+                    st.error(
+                        f"⚠️ Thêm 0/{total_requested} bản ghi mới. Hãy kiểm tra Nhật Ký (Raw Logs) bên dưới để xem chi tiết mã lỗi HTTP/kết nối."
+                    )
+
                 if run_rows:
                     st.dataframe(pd.DataFrame(run_rows), width="stretch")
                 st.cache_data.clear()
@@ -273,20 +284,45 @@ def render_crawl_tab() -> None:
 
         if submit_sync:
             sync_snapshot_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            sync_logs: list[str] = [f"=== BẮT ĐẦU SYNC GIÁ [{sync_snapshot_time}] ==="]
             with st.spinner("Đang sync giá sản phẩm cũ..."):
                 result = sync_prices_from_existing(
                     output_dir=str(DATA_DIR),
                     max_items=int(max_items),
                     delay_seconds=float(delay_seconds),
                     snapshot_time=sync_snapshot_time,
+                    log_list=sync_logs,
                 )
-            if result["success"]:
+            sync_logs.append(f"=== KẾT THÚC SYNC: {result.get('inserted', 0)} bản ghi mới ===")
+            st.session_state["crawl_live_logs"] = sync_logs
+
+            if result.get("success"):
                 st.success(
-                    f"Sync thành công. Đã tạo bản ghi mới trong {result['db_path']}. Mốc thời gian batch: {sync_snapshot_time}."
+                    f"Sync thành công. Đã tạo {result.get('inserted', 0)} bản ghi mới trong {result['db_path']}. Mốc thời gian batch: {sync_snapshot_time}."
                 )
             else:
-                st.warning("Không có bản ghi mới được tạo trong lần sync này.")
+                st.warning("Không có bản ghi mới được tạo trong lần sync này. Xem chi tiết log bên dưới.")
             st.cache_data.clear()
+
+    # --- KHUNG HIỂN THỊ RAW LOG TRỰC TIẾP DƯỚI BẢNG CÀO ---
+    st.markdown("### 📜 Nhật Ký & Debug Log Chi Tiết (Raw Logs)")
+    if "crawl_live_logs" not in st.session_state:
+        st.session_state["crawl_live_logs"] = []
+
+    logs = st.session_state["crawl_live_logs"]
+    if logs:
+        log_col_info, log_col_action = st.columns([5, 1])
+        with log_col_info:
+            st.caption(f"Đang có **{len(logs)}** dòng log ghi nhận từ lần chạy gần nhất:")
+        with log_col_action:
+            if st.button("🗑️ Xóa log", key="btn_clear_crawl_logs", use_container_width=True):
+                st.session_state["crawl_live_logs"] = []
+                st.rerun()
+
+        raw_log_content = "\n".join(logs)
+        st.code(raw_log_content, language="bash")
+    else:
+        st.info("💡 Chưa có log cào nào. Hãy bấm **'Cào mới'** hoặc **'Sync giá'** để xem chi tiết từng request API & kết quả DuckDB tại đây.")
 
     st.markdown("---")
     st.markdown("### Tự động cào theo lịch")
@@ -464,6 +500,7 @@ def render_crawl_tab() -> None:
                 total_inserted = 0
                 total_requested = 0
                 auto_snapshot_time = now.strftime("%Y-%m-%d %H:%M:%S")
+                auto_logs: list[str] = [f"=== BẮT ĐẦU AUTO CRAWL [{auto_snapshot_time}] ==="]
                 with st.spinner("Đang tự động cào dữ liệu đầu giờ..."):
                     for danh_muc, tu_khoa in parsed_targets:
                         result = crawl_new_products(
@@ -472,14 +509,22 @@ def render_crawl_tab() -> None:
                             output_dir=str(DATA_DIR),
                             danh_muc=danh_muc,
                             snapshot_time=auto_snapshot_time,
+                            log_list=auto_logs,
                         )
                         total_inserted += int(result.get("inserted", 0))
                         total_requested += int(result.get("requested", 0))
 
+                auto_logs.append(f"=== KẾT THÚC AUTO CRAWL: Đã thêm {total_inserted}/{total_requested} bản ghi ===")
+                st.session_state["crawl_live_logs"] = auto_logs
                 st.session_state["auto_crawl_last_slot"] = run_slot_key
-                st.success(
-                    f"Auto crawl {now.strftime('%H:%M')} hoàn tất: {total_inserted}/{total_requested} bản ghi mới. Mốc batch: {auto_snapshot_time}."
-                )
+                if total_inserted > 0:
+                    st.success(
+                        f"Auto crawl {now.strftime('%H:%M')} hoàn tất: {total_inserted}/{total_requested} bản ghi mới. Mốc batch: {auto_snapshot_time}."
+                    )
+                else:
+                    st.warning(
+                        f"Auto crawl {now.strftime('%H:%M')} kết thúc nhưng có 0/{total_requested} bản ghi mới. Xem log chi tiết ở trên."
+                    )
                 st.cache_data.clear()
         else:
             st.info(

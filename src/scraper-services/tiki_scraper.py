@@ -84,7 +84,35 @@ def ensure_raw_table_schema(con: duckdb.DuckDBPyConnection) -> None:
             con.execute(f"ALTER TABLE {RAW_TABLE_NAME} ADD COLUMN {col} {dtype}")
 
 
-def fetch_tiki_search_items(keyword: str, page_number: int, limit: int = 50) -> dict:
+DEFAULT_HEADERS = {
+    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+    "Accept": "application/json, text/plain, */*",
+    "Accept-Language": "vi-VN,vi;q=0.9,en-US;q=0.8,en;q=0.7",
+    "Referer": "https://tiki.vn/",
+    "Origin": "https://tiki.vn",
+    "sec-ch-ua": '"Chromium";v="124", "Google Chrome";v="124", "Not-A.Brand";v="99"',
+    "sec-ch-ua-mobile": "?0",
+    "sec-ch-ua-platform": '"Windows"',
+    "sec-fetch-dest": "empty",
+    "sec-fetch-mode": "cors",
+    "sec-fetch-site": "same-origin",
+}
+
+
+def _log_msg(msg: str, log_list: list[str] | None = None) -> None:
+    ts = datetime.now().strftime("%H:%M:%S")
+    formatted = f"[{ts}] {msg}"
+    print(formatted)
+    if log_list is not None:
+        log_list.append(formatted)
+
+
+def fetch_tiki_search_items(
+    keyword: str,
+    page_number: int,
+    limit: int = 50,
+    log_list: list[str] | None = None,
+) -> tuple[dict[str, Any], int | None, str | None]:
     url = "https://tiki.vn/api/v2/products"
     params = {
         "limit": limit,
@@ -92,38 +120,42 @@ def fetch_tiki_search_items(keyword: str, page_number: int, limit: int = 50) -> 
         "page": page_number + 1,
     }
 
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "application/json, text/plain, */*",
-    }
-
+    _log_msg(f"🌐 GET {url}?q={keyword}&page={page_number + 1}&limit={limit}", log_list)
     try:
-        r = requests.get(url, params=params, headers=headers, timeout=15)
+        t0 = time.time()
+        r = requests.get(url, params=params, headers=DEFAULT_HEADERS, timeout=15)
+        elapsed = time.time() - t0
         if r.status_code != 200:
-            print(f"[!] Lỗi HTTP khi gọi API Tiki: {r.status_code}")
-            return {}
-        return r.json()
+            err_snippet = r.text[:300].strip()
+            _log_msg(f"❌ [HTTP {r.status_code}] Lỗi API Tiki ({elapsed:.2f}s): {err_snippet}", log_list)
+            return {}, r.status_code, f"HTTP {r.status_code}: {err_snippet}"
+        data = r.json()
+        items_count = len(data.get("data") or [])
+        _log_msg(f"✅ [HTTP 200 OK] Nhận về {items_count} sản phẩm từ Tiki ({elapsed:.2f}s)", log_list)
+        return data, 200, None
     except Exception as e:
-        print(f"[!] Lỗi kết nối Tiki: {e}")
-        return {}
+        _log_msg(f"💥 Lỗi kết nối Tiki: {e}", log_list)
+        return {}, None, str(e)
 
 
-def fetch_tiki_product_detail(product_id: int) -> dict:
+def fetch_tiki_product_detail(
+    product_id: int,
+    log_list: list[str] | None = None,
+) -> tuple[dict[str, Any], int | None, str | None]:
     url = f"https://tiki.vn/api/v2/products/{product_id}"
-    headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
-        "Accept": "application/json, text/plain, */*",
-    }
 
     try:
-        r = requests.get(url, headers=headers, timeout=15)
+        t0 = time.time()
+        r = requests.get(url, headers=DEFAULT_HEADERS, timeout=15)
+        elapsed = time.time() - t0
         if r.status_code != 200:
-            print(f"[!] Lỗi HTTP khi gọi chi tiết sản phẩm {product_id}: {r.status_code}")
-            return {}
-        return r.json()
+            err_snippet = r.text[:300].strip()
+            _log_msg(f"❌ [HTTP {r.status_code}] Chi tiết SP {product_id} ({elapsed:.2f}s): {err_snippet}", log_list)
+            return {}, r.status_code, f"HTTP {r.status_code}: {err_snippet}"
+        return r.json(), 200, None
     except Exception as e:
-        print(f"[!] Lỗi kết nối khi lấy chi tiết sản phẩm {product_id}: {e}")
-        return {}
+        _log_msg(f"💥 Lỗi kết nối khi lấy chi tiết SP {product_id}: {e}", log_list)
+        return {}, None, str(e)
 
 
 def extract_product_url(item: dict[str, Any]) -> str:
@@ -188,22 +220,31 @@ def flatten_tiki_item(
     }
 
 
-def append_rows_to_raw_db(rows: list[dict[str, Any]], output_dir: str, dedupe_hours: int = 0) -> tuple[int, str]:
+def append_rows_to_raw_db(
+    rows: list[dict[str, Any]],
+    output_dir: str,
+    dedupe_hours: int = 0,
+    log_list: list[str] | None = None,
+) -> tuple[int, str]:
     db_path = build_db_path(output_dir)
     if not rows:
+        _log_msg(f"⚠️ Không có dữ liệu để ghi vào DuckDB", log_list)
         return 0, db_path
 
     df = pd.DataFrame(rows)
     if "id_product" not in df.columns:
+        _log_msg(f"❌ Dữ liệu không có cột id_product", log_list)
         return 0, db_path
 
     df = df.dropna(subset=["id_product"])
     df = df.drop_duplicates(subset=["id_product"], keep="last")
     if df.empty:
+        _log_msg(f"⚠️ Sau khi lọc null & duplicate thì dữ liệu trống", log_list)
         return 0, db_path
 
     con: duckdb.DuckDBPyConnection | None = None
     try:
+        _log_msg(f"💾 Kết nối DuckDB: {db_path}", log_list)
         con = duckdb.connect(db_path)
         ensure_raw_table_schema(con)
         cols = [row[0] for row in con.execute(f"DESCRIBE {RAW_TABLE_NAME}").fetchall()]
@@ -229,12 +270,15 @@ def append_rows_to_raw_db(rows: list[dict[str, Any]], output_dir: str, dedupe_ho
             df = cast(pd.DataFrame, df.loc[~mask])
 
         if df.empty:
+            _log_msg(f"⚠️ Các sản phẩm đều đã tồn tại trong {dedupe_hours}h qua, bỏ qua không thêm.", log_list)
             return 0, db_path
 
         con.append(RAW_TABLE_NAME, cast(pd.DataFrame, df))
-        return len(df), db_path
+        inserted_len = len(df)
+        _log_msg(f"🎉 Đã lưu thành công {inserted_len} dòng vào bảng `{RAW_TABLE_NAME}` ({db_path})", log_list)
+        return inserted_len, db_path
     except Exception as e:
-        print(f"[!] LỖI DuckDB: {e}")
+        _log_msg(f"❌ LỖI DuckDB: {e}", log_list)
         return 0, db_path
     finally:
         if con is not None:
@@ -249,18 +293,19 @@ def scrape_tiki(
     page_limit: int = 50,
     dedupe_hours: int = 0,
     snapshot_time: datetime | str | None = None,
+    log_list: list[str] | None = None,
 ):
-    print(f"[*] Bắt đầu cào dữ liệu từ Tiki cho từ khóa: '{keyword}'")
+    _log_msg(f"🚀 Bắt đầu cào dữ liệu từ Tiki cho từ khóa: '{keyword}'", log_list)
     all_items: list[dict[str, Any]] = []
     run_snapshot_time = snapshot_time or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 
     for page in range(max_pages):
-        print(f"[-] Đang cào trang {page + 1}...")
-        data = fetch_tiki_search_items(keyword, page, page_limit)
+        _log_msg(f"📄 Đang cào trang {page + 1}/{max_pages}...", log_list)
+        data, status_code, err = fetch_tiki_search_items(keyword, page, page_limit, log_list=log_list)
         items = data.get("data") or []
 
         if not items:
-            print("[-] Không còn dữ liệu hoặc bị giới hạn kết quả.")
+            _log_msg("⚠️ Không có sản phẩm nào được trả về từ Tiki ở trang này.", log_list)
             break
 
         for item in items:
@@ -280,12 +325,10 @@ def scrape_tiki(
 
         time.sleep(1.2)
 
-    inserted_count, db_path = append_rows_to_raw_db(all_items, output_dir, dedupe_hours=dedupe_hours)
-    if inserted_count == 0:
-        print("[*] Không có sản phẩm mới để thêm vào DB.")
-        return
-
-    print(f"[*] THÀNH CÔNG: Đã thêm {inserted_count} record mới vào {db_path}")
+    inserted_count, db_path = append_rows_to_raw_db(
+        all_items, output_dir, dedupe_hours=dedupe_hours, log_list=log_list
+    )
+    return inserted_count, db_path
 
 
 def refresh_existing_tiki_items(
@@ -293,11 +336,13 @@ def refresh_existing_tiki_items(
     max_items: int | None = None,
     delay_seconds: float = 0.3,
     snapshot_time: datetime | str | None = None,
-) -> bool:
+    log_list: list[str] | None = None,
+) -> tuple[bool, int, str, list[str]]:
+    logs: list[str] = log_list if log_list is not None else []
     db_path = build_db_path(output_dir)
     if not os.path.exists(db_path):
-        print(f"[!] Chưa tìm thấy DB tại: {db_path}")
-        return False
+        _log_msg(f"❌ Chưa tìm thấy DB tại: {db_path}", logs)
+        return False, 0, db_path, logs
 
     con: duckdb.DuckDBPyConnection | None = None
     try:
@@ -307,21 +352,23 @@ def refresh_existing_tiki_items(
         if max_items and max_items > 0:
             query += f" LIMIT {int(max_items)}"
         rows = con.execute(query).fetchall()
+    except Exception as e:
+        _log_msg(f"❌ Lỗi truy vấn danh sách id cũ: {e}", logs)
+        return False, 0, db_path, logs
     finally:
         if con is not None:
             con.close()
 
     item_ids = [int(r[0]) for r in rows if r and r[0] is not None]
     if not item_ids:
-        print(f"[!] Không có id_product nào trong {RAW_TABLE_NAME} để sync.")
-        return False
+        _log_msg(f"⚠️ Không có id_product nào trong {RAW_TABLE_NAME} để sync.", logs)
+        return False, 0, db_path, logs
 
-    print(f"[*] Sync giá cho {len(item_ids)} sản phẩm cũ...")
+    _log_msg(f"🔄 Bắt đầu sync giá cho {len(item_ids)} sản phẩm cũ...", logs)
     refreshed: list[dict[str, Any]] = []
     run_snapshot_time = snapshot_time or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     for idx, item_id in enumerate(item_ids, start=1):
-        print(f"[-] ({idx}/{len(item_ids)}) Product {item_id}")
-        payload = fetch_tiki_product_detail(item_id)
+        payload, status_code, err = fetch_tiki_product_detail(item_id, log_list=logs)
         item = payload.get("data") or payload
         if isinstance(item, dict) and item.get("id"):
             refreshed.append(
@@ -329,9 +376,8 @@ def refresh_existing_tiki_items(
             )
         time.sleep(delay_seconds)
 
-    inserted_count, db_path = append_rows_to_raw_db(refreshed, output_dir, dedupe_hours=0)
-    print(f"[*] Sync xong. Đã thêm {inserted_count} record mới vào {db_path}")
-    return inserted_count > 0
+    inserted_count, db_path = append_rows_to_raw_db(refreshed, output_dir, dedupe_hours=0, log_list=logs)
+    return inserted_count > 0, inserted_count, db_path, logs
 
 
 def crawl_new_products(
@@ -340,13 +386,23 @@ def crawl_new_products(
     output_dir: str,
     danh_muc: str = "giao_dien",
     snapshot_time: datetime | str | None = None,
+    log_list: list[str] | None = None,
 ) -> dict[str, Any]:
     quantity = int(quantity)
+    logs: list[str] = log_list if log_list is not None else []
+    _log_msg(f"🎯 [Cào mới] Danh mục: '{danh_muc}' | Từ khóa: '{keyword}' | Yêu cầu: {quantity} sản phẩm", logs)
 
     # Pull a wider candidate pool, then keep the most "volatile" products.
     candidate_limit = min(max(quantity * 10, 50), 100)
-    data = fetch_tiki_search_items(keyword, page_number=0, limit=candidate_limit)
-    items = [item for item in (data.get("data") or []) if isinstance(item, dict)]
+    data, status_code, err = fetch_tiki_search_items(keyword, page_number=0, limit=candidate_limit, log_list=logs)
+    raw_items = data.get("data") or []
+    items = [item for item in raw_items if isinstance(item, dict)]
+    
+    if not items:
+        _log_msg(f"⚠️ Tiki không trả về sản phẩm hợp lệ cho từ khóa '{keyword}' (HTTP: {status_code})", logs)
+    else:
+        _log_msg(f"🔍 Đang lọc {len(items)} sản phẩm theo tiêu chí lượt bán / đánh giá / giá...", logs)
+
     items = sorted(items, key=_volatility_score, reverse=True)[:quantity]
 
     run_snapshot_time = snapshot_time or datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -355,14 +411,18 @@ def crawl_new_products(
         flatten_tiki_item(item, danh_muc=danh_muc, tu_khoa=keyword, kieu_cao="new", snapshot_time=run_snapshot_time)
         for item in items
     ]
-    inserted_count, db_path = append_rows_to_raw_db(rows, output_dir, dedupe_hours=0)
+    inserted_count, db_path = append_rows_to_raw_db(rows, output_dir, dedupe_hours=0, log_list=logs)
+    
     return {
         "inserted": inserted_count,
         "requested": quantity,
         "fetched": len(rows),
-        "candidate_pool": len(data.get("data") or []),
+        "candidate_pool": len(items),
         "selection_strategy": "top_sold_rating_price",
         "db_path": db_path,
+        "logs": logs,
+        "status_code": status_code,
+        "error": err,
     }
 
 
@@ -371,17 +431,21 @@ def sync_prices_from_existing(
     max_items: int,
     delay_seconds: float = 0.3,
     snapshot_time: datetime | str | None = None,
+    log_list: list[str] | None = None,
 ) -> dict[str, Any]:
-    ok = refresh_existing_tiki_items(
+    ok, inserted_count, db_path, logs = refresh_existing_tiki_items(
         output_dir=output_dir,
         max_items=max_items,
         delay_seconds=delay_seconds,
         snapshot_time=snapshot_time,
+        log_list=log_list,
     )
     return {
         "success": ok,
+        "inserted": inserted_count,
         "max_items": max_items,
-        "db_path": build_db_path(output_dir),
+        "db_path": db_path,
+        "logs": logs,
     }
 
 
