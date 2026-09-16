@@ -889,7 +889,7 @@ def render_duckdb_tab() -> None:
 
     if run_sql and user_sql.strip():
         try:
-            with duckdb.connect(str(RAW_DB_PATH), read_only=True) as con:
+            with duckdb.connect(str(RAW_DB_PATH), read_only=False) as con:
                 query_result = con.execute(user_sql).fetchdf()
                 st.success(f"✅ Truy vấn thành công! Trả về **{len(query_result):,}** dòng kết quả:")
                 st.dataframe(query_result, width="stretch")
