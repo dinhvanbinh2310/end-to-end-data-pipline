@@ -52,3 +52,18 @@ def test_duckdb_migration_creates_table(tmp_path):
     required_cols = {"thoi_diem", "ten_san_pham", "gia_hien_tai", "danh_muc", "kieu_cao"}
     assert required_cols.issubset(columns)
     con.close()
+
+
+def test_ci_branch_workflow():
+    """Test case để kiểm tra CI kích hoạt trên branch mới."""
+    pipeline_version = "1.0.0"
+    assert pipeline_version == "1.0.0"
+
+
+def test_intentional_failure():
+    """Test case cố tình tạo lỗi để xem CI cảnh báo đỏ."""
+    expected_status = "SUCCESS"
+    actual_status = "FAILED_INTENTIONALLY"
+    assert actual_status == expected_status, "CỐ TÌNH GÂY LỖI: Trạng thái không đạt chuẩn để test CI!"
+
+
